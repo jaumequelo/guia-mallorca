@@ -553,7 +553,11 @@
     </footer>
 
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
-    <script src="config.js"></script>
+    <script>
+      // Token inyectado en build (Vercel) o leído desde config.js local
+      window.MAPBOX_TOKEN = window.MAPBOX_TOKEN || '';
+    </script>
+    <script src="config.js" onerror="void 0"></script>
     <script src="script.js"></script>
 </body>
 </html>
