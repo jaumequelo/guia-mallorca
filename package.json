@@ -1,0 +1,49 @@
+{
+  "name": "guia-mallorca",
+  "version": "1.0.0",
+  "description": "Guía interactiva de viaje a Mallorca - 3 días desde Calvià con mapa y optimización de ruta",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "dev": "live-server",
+    "build": "echo 'No build needed for static files'",
+    "test": "echo 'Run tests with: npm test'",
+    "deploy": "echo 'Deploy to your hosting platform'",
+    "lint": "eslint script.js"
+  },
+  "keywords": [
+    "mallorca",
+    "viaje",
+    "ruta",
+    "turismo",
+    "mapa",
+    "guía",
+    "travel",
+    "tourism",
+    "interactive",
+    "web-app"
+  ],
+  "author": "Travel Guide Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/usuario/guia-mallorca.git"
+  },
+  "bugs": {
+    "url": "https://github.com/usuario/guia-mallorca/issues"
+  },
+  "homepage": "https://github.com/usuario/guia-mallorca#readme",
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "live-server": "^1.2.2"
+  },
+  "dependencies": {
+    "leaflet": "^1.9.4",
+    "font-awesome": "^6.4.0"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  }
+}

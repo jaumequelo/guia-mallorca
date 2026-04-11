@@ -1,0 +1,972 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #0066cc;
+    --secondary-color: #ff6b35;
+    --accent-color: #00d4aa;
+    --dark-bg: #0f1419;
+    --light-bg: #f5f7fa;
+    --border-color: #e0e6ed;
+    --text-dark: #1a1a1a;
+    --text-light: #666666;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--light-bg);
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+/* Header */
+header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #00b4e6 100%);
+    color: white;
+    padding: 1.5rem 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+header h1 {
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+header .subtitle {
+    font-size: 0.95rem;
+    opacity: 0.95;
+    font-weight: 300;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Day Selector */
+.day-selector {
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    position: sticky;
+    top: 80px;
+    z-index: 99;
+}
+
+.day-selector .container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+}
+
+.day-btn {
+    background: var(--light-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.day-btn:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 102, 204, 0.1);
+}
+
+.day-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.day-number {
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+
+.day-title {
+    font-size: 0.75rem;
+}
+
+/* Main Content */
+main {
+    padding: 2rem 1rem;
+}
+
+.content-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+@media (max-width: 1024px) {
+    .content-wrapper {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Map Section */
+.map-section {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background: white;
+}
+
+#map {
+    width: 100%;
+    height: 500px;
+    border-radius: 16px;
+}
+
+@media (max-width: 768px) {
+    #map {
+        height: 350px;
+    }
+}
+
+.map-legend {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background: white;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    font-size: 0.85rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 0.5rem;
+}
+
+.legend-item:last-child {
+    margin-bottom: 0;
+}
+
+.legend-icon {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.legend-icon.start {
+    background: #4CAF50;
+}
+
+.legend-icon.stop {
+    background: var(--secondary-color);
+}
+
+.legend-icon.end {
+    background: #2196F3;
+}
+
+/* Info Section */
+.info-section {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.day-content h2 {
+    color: var(--primary-color);
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.day-summary {
+    background: linear-gradient(135deg, rgba(0, 102, 204, 0.05), rgba(0, 212, 170, 0.05));
+    padding: 1rem;
+    border-left: 4px solid var(--primary-color);
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+/* Itinerary */
+.itinerary {
+    margin-bottom: 2rem;
+}
+
+.itinerary-item {
+    display: grid;
+    grid-template-columns: auto auto 100px 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    align-items: start;
+    transition: all 0.3s ease;
+}
+
+.itinerary-item:hover {
+    background: rgba(0, 102, 204, 0.02);
+    padding: 0.5rem;
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+    padding-left: 0.5rem;
+    border-radius: 8px;
+}
+
+.itinerary-item.completed {
+    opacity: 0.7;
+}
+
+.itinerary-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+/* Checkbox */
+.stop-checkbox {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    accent-color: var(--success-color);
+    margin-top: 8px;
+    transition: all 0.3s ease;
+}
+
+.stop-checkbox:hover {
+    transform: scale(1.1);
+}
+
+.stop-checkbox:checked {
+    animation: checkmark 0.3s ease;
+}
+
+/* Número de parada */
+.stop-number {
+    width: 28px;
+    height: 28px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+.time-badge {
+    background: linear-gradient(135deg, var(--primary-color), #00b4e6);
+    color: white;
+    padding: 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-align: center;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+}
+
+.stop-info h3 {
+    color: var(--text-dark);
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stop-info h3 i {
+    color: var(--primary-color);
+}
+
+.stop-info p {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+}
+
+.tip-info {
+    background: #fff3cd;
+    border-left: 4px solid var(--warning-color);
+    padding: 0.75rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    margin: 0.75rem 0;
+}
+
+.tip-info i {
+    color: #ff9800;
+    margin-right: 0.5rem;
+}
+
+.stop-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.75rem;
+}
+
+.stop-details span {
+    font-size: 0.8rem;
+    background: var(--light-bg);
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-light);
+}
+
+.stop-details i {
+    color: var(--primary-color);
+}
+
+/* Driving Info */
+.driving-info {
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.05), rgba(255, 193, 7, 0.05));
+    border-left: 4px solid var(--secondary-color);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.driving-info h4 {
+    color: var(--secondary-color);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.driving-info p {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.driving-info strong {
+    color: var(--text-dark);
+}
+
+/* Restaurant Info */
+.restaurant-info {
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.05), rgba(0, 212, 170, 0.05));
+    border-left: 4px solid var(--success-color);
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.restaurant-info h4 {
+    color: var(--success-color);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.restaurant-info ul {
+    list-style: none;
+}
+
+.restaurant-info li {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    padding-left: 1.5rem;
+    position: relative;
+    color: var(--text-light);
+}
+
+.restaurant-info li:before {
+    content: "🍴";
+    position: absolute;
+    left: 0;
+}
+
+/* Info Panel */
+.info-panel {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Progress Panel */
+.progress-panel {
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.05), rgba(0, 212, 170, 0.05));
+    border: 2px solid rgba(40, 167, 69, 0.2);
+    padding: 1.5rem;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.1);
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.progress-header h3 {
+    color: var(--success-color);
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+}
+
+.btn-clear {
+    background: var(--success-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-clear:hover {
+    background: #229447;
+    transform: scale(1.05);
+}
+
+.progress-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.progress-day {
+    background: white;
+    padding: 1rem;
+    border-radius: 12px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.progress-day h4 {
+    color: var(--primary-color);
+    font-size: 0.95rem;
+    margin: 0 0 0.75rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.progress-stop {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-light);
+}
+
+.progress-stop input[type="checkbox"] {
+    cursor: pointer;
+}
+
+.progress-stop.completed {
+    color: var(--success-color);
+    text-decoration: line-through;
+}
+
+.progress-counter {
+    display: inline-block;
+    background: var(--primary-color);
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-left: 0.5rem;
+}
+
+/* Scrollbar custom en progress */
+.progress-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.progress-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+}
+
+.progress-content::-webkit-scrollbar-thumb {
+    background: rgba(0, 102, 204, 0.3);
+    border-radius: 10px;
+}
+
+.progress-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 102, 204, 0.6);
+}
+
+.info-panel h3 {
+    color: var(--primary-color);
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.info-card {
+    background: linear-gradient(135deg, var(--light-bg), #ffffff);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 102, 204, 0.1);
+    border-color: var(--primary-color);
+}
+
+.info-card h4 {
+    color: var(--primary-color);
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.info-card p {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    line-height: 1.6;
+}
+
+/* Gastronomía Section */
+.gastro-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.gastro-section h3 {
+    color: var(--secondary-color);
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.gastro-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.gastro-card {
+    background: linear-gradient(135deg, #fff8f0, #ffffff);
+    border: 1px solid rgba(255, 107, 53, 0.15);
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.gastro-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(255, 107, 53, 0.12);
+    border-color: var(--secondary-color);
+}
+
+.gastro-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.gastro-card h4 {
+    color: var(--secondary-color);
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+}
+
+.gastro-card p {
+    font-size: 0.82rem;
+    color: var(--text-light);
+    line-height: 1.4;
+}
+
+/* Tips Section */
+.tips-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+}
+
+.tips-section h3 {
+    color: var(--primary-color);
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tips-list {
+    list-style: none;
+    columns: 1;
+}
+
+@media (min-width: 768px) {
+    .tips-list {
+        columns: 2;
+        gap: 2rem;
+    }
+}
+
+.tips-list li {
+    background: linear-gradient(135deg, var(--light-bg), #ffffff);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-color);
+    font-size: 0.9rem;
+    break-inside: avoid;
+    transition: all 0.3s ease;
+}
+
+.tips-list li:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 8px rgba(0, 102, 204, 0.1);
+}
+
+/* Footer */
+footer {
+    background: var(--dark-bg);
+    color: white;
+    text-align: center;
+    padding: 2rem;
+    margin-top: 3rem;
+}
+
+footer p {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+/* Responsive for mobile */
+@media (max-width: 768px) {
+    .day-selector .container {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    main {
+        padding: 1rem 0.75rem;
+    }
+
+    .content-wrapper {
+        gap: 1rem;
+    }
+
+    .info-section {
+        padding: 1.5rem;
+    }
+
+    .itinerary-item {
+        grid-template-columns: auto auto auto 1fr;
+        gap: 0.5rem 0.75rem;
+        align-items: center;
+    }
+
+    .time-badge {
+        font-size: 0.65rem;
+        padding: 0.5rem 0.4rem;
+        min-width: 60px;
+    }
+
+    .stop-info h3 {
+        font-size: 0.9rem;
+    }
+
+    .stop-info p {
+        font-size: 0.85rem;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stop-details {
+        gap: 0.5rem;
+    }
+
+    .stop-details span {
+        font-size: 0.75rem;
+        padding: 0.35rem 0.6rem;
+    }
+
+    #map {
+        height: 300px;
+    }
+
+    .day-content h2 {
+        font-size: 1.3rem;
+    }
+
+    .info-panel,
+    .tips-section {
+        padding: 1.5rem 1rem;
+    }
+
+    .tips-list {
+        columns: 1;
+    }
+
+    .gastro-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .gastro-section {
+        padding: 1.5rem 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .gastro-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+    .gastro-card {
+        padding: 0.9rem 0.75rem;
+    }
+    .gastro-icon {
+        font-size: 1.5rem;
+    }
+    header h1 {
+        font-size: 1.3rem;
+    }
+
+    header .subtitle {
+        font-size: 0.8rem;
+    }
+
+    .day-selector .container {
+        grid-template-columns: 1fr;
+        gap: 0.4rem;
+        padding: 0.5rem;
+    }
+
+    .day-btn {
+        padding: 0.6rem;
+        font-size: 0.75rem;
+    }
+
+    .day-content h2 {
+        font-size: 1.1rem;
+    }
+
+    .itinerary-item {
+        grid-template-columns: auto auto 1fr;
+        grid-template-rows: auto auto;
+        gap: 0.4rem 0.6rem;
+        margin-bottom: 1rem;
+        align-items: start;
+    }
+
+    .stop-info {
+        grid-column: 1 / -1;
+        grid-row: 2;
+    }
+
+    .time-badge {
+        font-size: 0.6rem;
+        padding: 0.4rem 0.5rem;
+    }
+
+    .stop-checkbox {
+        width: 20px;
+        height: 20px;
+        margin-top: 4px;
+    }
+
+    #map {
+        height: 250px;
+    }
+
+    .map-legend {
+        bottom: 10px;
+        right: 10px;
+        padding: 0.75rem;
+        font-size: 0.75rem;
+    }
+
+    .legend-item {
+        margin-bottom: 0.4rem;
+    }
+
+    .stop-details {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .stop-details span {
+        font-size: 0.7rem;
+    }
+
+    main {
+        padding: 1rem 0.5rem;
+    }
+
+    .info-section {
+        padding: 1rem;
+    }
+
+    .info-panel,
+    .tips-section {
+        padding: 1.25rem 0.75rem;
+        border-radius: 12px;
+    }
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes checkmark {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.day-content {
+    animation: fadeIn 0.3s ease;
+}
+
+.legend-icon.route {
+    width: 20px;
+    height: 2px;
+    background: var(--primary-color);
+    border-radius: 1px;
+}
+
+/* Mapbox GL JS customization */
+.mapboxgl-popup-content {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 12px !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-width: 180px;
+}
+
+.mapboxgl-popup-tip {
+    border-top-color: white;
+}
+
+.mapboxgl-ctrl-attrib {
+    background: rgba(255, 255, 255, 0.9) !important;
+    font-size: 0.75rem;
+}
+
+.mapboxgl-ctrl-group {
+    border-radius: 8px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+}
+
+.popup-content h4 {
+    color: #0066cc;
+    margin-bottom: 0.4rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.popup-content p {
+    color: #666;
+    font-size: 0.82rem;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* Print Styles */
+@media print {
+    header {
+        position: static;
+    }
+
+    .day-selector {
+        display: none;
+    }
+
+    .content-wrapper {
+        grid-template-columns: 1fr;
+    }
+
+    #map {
+        display: none;
+    }
+
+    footer {
+        margin-top: 2rem;
+    }
+}

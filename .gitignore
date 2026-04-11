@@ -1,0 +1,85 @@
+# Git ignore file for Guía Mallorca project
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Token de Mapbox (NO subir al repo)
+config.js
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Build & Deployment
+dist/
+build/
+*.min.js
+*.min.css
+.cache/
+
+# IDE Specific
+.eslintcache
+.prettier-ignore
+
+# OS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+
+# Log files
+logs/
+*.log
+
+# Temp files
+temp/
+tmp/
+*.tmp
+
+# Development
+.dev
+.local
+*.local
+
+# Testing
+coverage/
+.nyc_output/
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Git
+.git/
+
+# Hidden files (except .gitignore, .github, .env.example, .htaccess)
+.*
+!.gitignore
+!.github
+!.env.example
+!.htaccess
+
+# Only commit source code, not dependencies
+node_modules/*
+!node_modules/.package-lock.json

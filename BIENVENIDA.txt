@@ -1,0 +1,260 @@
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                                                                               ║
+║                    🗺️  GUÍA INTERACTIVA DE VIAJE A MALLORCA                  ║
+║                                                                               ║
+║                        ¡Bienvenido a tu aventura! 🏖️                          ║
+║                                                                               ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+✨ GRACIAS POR USAR ESTA GUÍA DE VIAJE A MALLORCA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 COMIENZA AQUÍ (3 PASOS FÁCILES):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1️⃣  ABRE LA APP
+    → Double-click en: index.html
+    → O arrastra index.html al navegador
+    → ¡Eso es todo! ✅
+
+2️⃣  LEE LA GUÍA RÁPIDA
+    → Abre: INICIO-RAPIDO.md
+    → Aprenderás todas las funciones en 5 minutos
+
+3️⃣  DISFRUTA TU VIAJE
+    → Selecciona Día 1, 2 o 3
+    → Ve el mapa interactivo
+    → Lee los detalles de cada parada
+    → ¡Prepárate para una experiencia increíble!
+
+
+📚 DOCUMENTACIÓN INCLUIDA:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📖 README.md
+   ▸ Guía completa del proyecto
+   ▸ Todas las características
+   ▸ Cómo desplegar online
+   ▸ Problemas comunes
+
+⚡ INICIO-RAPIDO.md
+   ▸ Empezar en 3 minutos (RECOMENDADO LEER)
+   ▸ Cómo usar la app
+   ▸ Cómo publuciar online
+   ▸ Tips y consejls
+
+🔮 MEJORAS-FUTURAS.md
+   ▸ Ideas para mejorar
+   ▸ Características planeadas
+   ▸ Cómo expandir a otras rutas
+
+📋 ESTRUCTURA.md
+   ▸ Estructura visual del proyecto
+   ▸ Explicación de cada archivo
+   ▸ Cómo navegar el código
+
+📝 CHANGELOG.md
+   ▸ Historial de versiones
+   ▸ Qué hay de nuevo
+   ▸ Cambios futuros
+
+
+🗂️ ARCHIVOS DEL PROYECTO:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ index.html         → Abre aquí! (página principal)
+✅ styles.css         → Diseño responsivo
+✅ script.js          → Lógica y mapas
+✅ manifest.json      → Configuración PWA
+✅ sw.js              → Service Worker (funciona sin internet)
+✅ robots.txt         → SEO
+✅ sitemap.xml        → Mapa del sitio
+✅ package.json       → Dependencias
+✅ .env.example       → Variables de ejemplo
+✅ .htaccess          → Config Apache
+✅ .gitignore         → Config Git
+
+
+🎉 QUÉ INCLUYE ESTA APP:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✓ Ruta optimizada de 3 días desde Calvià
+✓ Mapa interactivo con todos los puntos (Leaflet + OpenStreetMap)
+✓ Itinerario detallado por cada día
+✓ Información completa de cada lugar
+✓ Restaurantes recomendados
+✓ Consejos prácticos de viaje
+✓ Diseño 100% responsive (móvil, tablet, PC)
+✓ Funcionalidad offline (Service Worker)
+✓ Instalable como app en móviles
+✓ Rápido y ligero (<100KB)
+
+
+🗺️ RUTA DE 3 DÍAS INCLUIDA:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DÍA 1: CALÓ DES MORO - PALMA
+├─ Salida desde Calvià
+├─ Desayuno: Can Joan de s'Aigo
+├─ Caló des Moro: cala virgen con snorkel
+├─ Castillo de Bellver: vistas panorámicas
+├─ Centro histórico Palma
+└─ Cena: Naan Street Food
+
+DÍA 2: PLAYAS DEL SUR - SIERRA TRAMONTANA
+├─ Es Trenc: 2km arena blanca
+├─ Valldemossa: pueblo medieval
+├─ Deià: pueblo de artistas
+├─ Mirador Sa Foradada: atardecer espectacular
+└─ Cena: Cuisine japonesa
+
+DÍA 3: TRANVÍA - TRAMONTANA - CAP FORMENTOR
+├─ Fornalutx: pueblo encantador
+├─ Puerto de Sóller: pescadores y barcos
+├─ Tranvía vintage 1911: campos de naranjas
+├─ Cap de Formentor: acantilados +300m
+└─ Cena: Pollensa
+
+
+🔧 TECNOLOGÍAS UTILIZADAS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔹 HTML5 - Estructura semántica
+🔹 CSS3 - Responsive design (Grid + Flexbox)
+🔹 JavaScript - Interactividad
+🔹 Leaflet.js - Mapas (Open Source)
+🔹 OpenStreetMap - Datos cartográficos gratuitos
+🔹 Font Awesome - Iconografía
+🔹 Service Workers - Funcionalidad offline
+
+
+💡 CONSEJOS PARA TU VIAJE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🌅 Llega temprano a playas (Caló des Moro, Es Trenc)
+☀️  Protector solar SPF 50+
+🚗 Carreteras sinuosas en Tramontana - ¡Conduce con cuidado!
+📱 Descarga mapas offline como respaldo
+🏨 Reserva restaurantes populares con anticipación
+💰 Lleva monedas para parkings de pago
+🍽️  Prueba la cocina local: ensaimadas, pa amb oli, arròs brut
+⚠️  Cap de Formentor en verano: acceso restringido a autos propios
+
+
+🚀 CÓMO PUBLICAR ONLINE (GRATIS):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+OPCIÓN 1: GitHub Pages (Manual pero gratis)
+1. Ve a github.com → Crea cuenta
+2. Crea repositorio "guia-mallorca"
+3. Sube todos los archivos
+4. Ve a Settings → Pages
+5. Tu URL: https://tuusuario.github.io/guia-mallorca
+
+OPCIÓN 2: Netlify (Más fácil)
+1. Ve a netlify.com → Sign up
+2. Arrastra la carpeta GUIA-MALLORCA
+3. ¡Tu URL generada en segundos!
+
+OPCIÓN 3: Vercel (Alternativa)
+1. Ve a vercel.com
+2. Importa repositorio
+3. Deploy (1 click)
+
+
+📱 INSTALAR EN MÓVIL:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+iOS (iPhone):
+1. Abre Safari
+2. Ve a tu URL
+3. Toca compartir ⬆️
+4. "Add to Home Screen"
+5. ¡Icono en tu pantalla!
+
+Android:
+1. Abre Chrome
+2. Ve a tu URL
+3. Menú ⋮ → "Install app"
+4. ¡Icono en tu pantalla!
+
+
+⚠️ PROBLEMAS COMUNES:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❌ El mapa no carga
+   ✓ Recarga la página (F5)
+   ✓ Verifica conexión a internet
+   ✓ Limpia caché (Ctrl+Shift+Del)
+
+❌ No veo los marcadores
+   ✓ Haz zoom en el mapa
+   ✓ Abre consola (F12) para ver errores
+
+❌ Aplicación lenta
+   ✓ Cierra otras pestañas
+   ✓ Usa Chrome o Firefox
+   ✓ Recarga la página
+
+
+🎓 MÁS INFORMACIÓN:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📖 Documentación completa:
+   → README.md (guía general)
+   → INICIO-RAPIDO.md (instrucciones rápidas)
+   → ESTRUCTURA.md (estructura del proyecto)
+
+🐛 Reportar bugs:
+   → Abre GitHub Issues en repo
+
+💬 Sugerencias:
+   → Comparte tus ideas en discusiones
+
+🤝 Contribuir:
+   → Mejora la app con Pull Requests
+
+
+📞 SOPORTE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Si tienes dudas:
+1. RevISA INICIO-RAPIDO.md
+2. Busca en README.md
+3. Abre consola (F12) para errores
+4. Prueba en otro navegador
+
+
+✅ CHECKLIST - ANTES DE COMENZAR:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+□ Descargué todos los archivos
+□ Abrí index.html en el navegador
+□ Cambié entre Día 1, 2 y 3
+□ Hice click en un marcador del mapa
+□ Leí INICIO-RAPIDO.md
+□ ¡Estoy listo para viajar!
+
+
+🎉 ¡BIENVENIDO Y QUE DISFRUTES TU VIAJE!
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Esta guía fue creada con ❤️ para que disfrutes al máximo tu viaje a Mallorca.
+
+Recuerda:
+✨ Cada cala es una joya
+🌅 Cada atardecer es inolvidable
+🍽️  Cada plato local es una experiencia
+📸 Cada foto es un recuerdo
+
+¡Que lo pases increíble! 🏖️☀️
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Created with ❤️  | Guía Mallorca v1.0.0 | Abril 2024
+
+Versión: 1.0.0
+Última actualización: 11 de Abril de 2024
+Desarrollado para viajeros que quieren maximizar su experiencia
+
+═════════════════════════════════════════════════════════════════════════════════

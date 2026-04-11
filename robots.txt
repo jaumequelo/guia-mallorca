@@ -1,0 +1,29 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tudominio.com/sitemap.xml
+
+# Bloquear acceso a archivos sensibles
+Disallow: /.env
+Disallow: /sw.js.map
+Disallow: /.htaccess
+
+# Permitir acceso a recursos estáticos
+Allow: *.css
+Allow: *.js
+Allow: *.png
+Allow: *.jpg
+Allow: *.svg
+
+# Configurar crawl delay para no sobrecargar servidor
+Crawl-delay: 1
+
+# Google specific rules
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Bing specific rules
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
