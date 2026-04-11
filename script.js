@@ -242,6 +242,13 @@ async function displayDay(dayIndex) {
     activeMarkers.forEach(m => m.remove());
     activeMarkers = [];
 
+    // Reset parking checkboxes and markers
+    const showParkingsCheckbox = document.getElementById('showParkingsCheckbox');
+    const showParkingsCheckboxNav = document.getElementById('showParkingsCheckboxNav');
+    if (showParkingsCheckbox) showParkingsCheckbox.checked = false;
+    if (showParkingsCheckboxNav) showParkingsCheckboxNav.checked = false;
+    removeParkingsFromMap();
+
     if (map.getLayer('route-layer')) map.removeLayer('route-layer');
     if (map.getLayer('route-layer-outline')) map.removeLayer('route-layer-outline');
     if (map.getSource('route-source')) map.removeSource('route-source');
@@ -367,6 +374,46 @@ function showParkingInfo(zone) {
 }
 
 // =============================================
+// MARCADORES DE PARKING EN EL MAPA
+// =============================================
+let parkingMarkers = [];
+
+function addParkingsToMap(zone) {
+    // Limpiar marcadores anteriores
+    parkingMarkers.forEach(m => m.remove());
+    parkingMarkers = [];
+
+    if (!zone || !parkingsData[zone]) return;
+
+    const data = parkingsData[zone];
+    data.parkings.forEach(parking => {
+        const coords = parking.coords.split(',').map(c => parseFloat(c.trim()));
+        const lat = coords[0];
+        const lng = coords[1];
+
+        const el = document.createElement('div');
+        el.className = 'parking-marker';
+        el.innerHTML = '<div class="parking-letter">P</div>';
+        el.title = parking.name;
+
+        const popup = new mapboxgl.Popup({ offset: 25, closeButton: false })
+            .setHTML(`<div class="popup-content"><h4>${parking.name}</h4><p>${parking.tipo}</p><p>${parking.coste}</p></div>`);
+
+        const marker = new mapboxgl.Marker({ element: el, anchor: 'bottom' })
+            .setLngLat([lng, lat])
+            .setPopup(popup)
+            .addTo(map);
+
+        parkingMarkers.push(marker);
+    });
+}
+
+function removeParkingsFromMap() {
+    parkingMarkers.forEach(m => m.remove());
+    parkingMarkers = [];
+}
+
+// =============================================
 // ACTUALIZAR ICONO DE MARCADOR AL MARCAR VISITA
 // =============================================
 function renderMarkerStates() {
@@ -397,21 +444,36 @@ document.querySelectorAll('.day-btn').forEach((btn, index) => {
         document.querySelectorAll('.day-content').forEach(c => c.style.display = 'none');
         document.getElementById(`day-${index}`).style.display = 'block';
         displayDay(index);
-        document.querySelector('.content-wrapper').scrollIntoView({ behavior: 'smooth' });
+        // Cerrar menú flotante al seleccionar un día
+        document.getElementById('floatingNav').classList.remove('open');
+        // Scroll hasta el mapa dejando visible el header sticky
+        const mapSection = document.querySelector('.map-section');
+        if (mapSection) {
+            const headerHeight = document.querySelector('header')?.offsetHeight || 0;
+            const top = mapSection.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
+            window.scrollTo({ top, behavior: 'smooth' });
+        }
     });
 });
 
-document.addEventListener('change', (e) => {
-    if (e.target.classList.contains('stop-checkbox')) {
-        const key = `${e.target.dataset.day}-${e.target.dataset.stop}`;
-        if (e.target.checked) visitedStops[key] = true;
-        else delete visitedStops[key];
-        saveVisitedStops();
-        updateCheckboxUI();
-    }
-});
-
+// Toggle del menú flotante y cierre externo (dentro de DOMContentLoaded para garantizar que el DOM exista)
 document.addEventListener('DOMContentLoaded', () => {
+    const floatingNav = document.getElementById('floatingNav');
+    const floatingNavToggle = document.getElementById('floatingNavToggle');
+
+    if (floatingNavToggle) {
+        floatingNavToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            floatingNav.classList.toggle('open');
+        });
+    }
+
+    document.addEventListener('click', (e) => {
+        if (floatingNav && !floatingNav.contains(e.target)) {
+            floatingNav.classList.remove('open');
+        }
+    });
+
     const clearBtn = document.getElementById('clearProgress');
     if (clearBtn) {
         clearBtn.addEventListener('click', () => {
@@ -424,9 +486,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// =============================================
-// ESTILOS CSS PARA MARCADORES
-// =============================================
+document.addEventListener('change', (e) => {
+    if (e.target.classList.contains('stop-checkbox')) {
+        const key = `${e.target.dataset.day}-${e.target.dataset.stop}`;
+        if (e.target.checked) visitedStops[key] = true;
+        else delete visitedStops[key];
+        saveVisitedStops();
+        updateCheckboxUI();
+    }
+    // Control de parkings en el mapa — sincroniza ambos checkboxes
+    if (e.target.id === 'showParkingsCheckbox' || e.target.id === 'showParkingsCheckboxNav') {
+        const checked = e.target.checked;
+        document.getElementById('showParkingsCheckbox').checked = checked;
+        document.getElementById('showParkingsCheckboxNav').checked = checked;
+        const zone = routeData[currentDayIndex]?.zone;
+        if (checked && zone) {
+            addParkingsToMap(zone);
+        } else {
+            removeParkingsFromMap();
+        }
+    }
+});
+
 const markerStyle = document.createElement('style');
 markerStyle.textContent = `
     .custom-marker {
@@ -451,6 +532,31 @@ markerStyle.textContent = `
     .custom-marker.marker-restaurant { background: linear-gradient(135deg, #ff8c00, #c85000); }
     .custom-marker.marker-visited    { background: linear-gradient(135deg, #28a745, #155724); }
     .marker-number { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+    
+    /* Parking Markers */
+    .parking-marker {
+        width: 35px;
+        height: 35px;
+        background: linear-gradient(135deg, #FF6B6B, #ee5a52);
+        border: 2px solid white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .parking-marker:hover { 
+        transform: scale(1.2);
+        box-shadow: 0 4px 12px rgba(255, 107, 107, 0.6);
+    }
+    .parking-letter {
+        font-weight: 900;
+        font-size: 16px;
+        color: white;
+        line-height: 1;
+    }
 `;
 document.head.appendChild(markerStyle);
 

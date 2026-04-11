@@ -21,27 +21,6 @@
         </div>
     </header>
 
-    <nav class="day-selector">
-        <div class="container">
-            <button class="day-btn active" data-day="0">
-                <span class="day-number">Día 1</span>
-                <span class="day-title">Palma & Bellver</span>
-            </button>
-            <button class="day-btn" data-day="1">
-                <span class="day-number">Día 2</span>
-                <span class="day-title">Tramontana</span>
-            </button>
-            <button class="day-btn" data-day="2">
-                <span class="day-number">Día 3</span>
-                <span class="day-title">Norte & Formentor</span>
-            </button>
-            <button class="day-btn" data-day="3">
-                <span class="day-number">Día 4</span>
-                <span class="day-title">Sur, Interior & Este</span>
-            </button>
-        </div>
-    </nav>
-
     <main class="container">
         <!-- Panel de Progreso del Viaje -->
         <div class="progress-panel">
@@ -74,13 +53,6 @@
                         <span class="legend-icon route"></span> Ruta
                     </div>
                 </div>
-            </div>
-
-            <!-- Información de Parkings -->
-            <div class="parking-info" id="parkingInfo" style="display: none;">
-                <h3><i class="fas fa-parking"></i> Dónde Aparcar — <span id="parkingTitle"></span></h3>
-                <p id="parkingTip" class="parking-tip"></p>
-                <div class="parking-grid" id="parkingGrid"></div>
             </div>
 
             <!-- Información del día -->
@@ -467,6 +439,21 @@
             </div>
         </div>
 
+        <!-- Información de Parkings con Control -->
+        <section class="parking-section">
+            <div class="parking-header">
+                <h3><i class="fas fa-parking"></i> Dónde Aparcar — <span id="parkingTitle"></span></h3>
+                <label class="parking-toggle">
+                    <input type="checkbox" id="showParkingsCheckbox" />
+                    <span>Mostrar parkings en el mapa</span>
+                </label>
+            </div>
+            <div class="parking-info" id="parkingInfo" style="display: none;">
+                <p id="parkingTip" class="parking-tip"></p>
+                <div class="parking-grid" id="parkingGrid"></div>
+            </div>
+        </section>
+
         <!-- Información General -->
         <section class="info-panel">
             <h3><i class="fas fa-info-circle"></i> Información Práctica</h3>
@@ -563,6 +550,37 @@
             </a></p>
         </div>
     </footer>
+
+    <!-- Menú flotante de días -->
+    <div class="floating-nav" id="floatingNav">
+        <div class="floating-nav-menu" id="floatingNavMenu">
+            <button class="day-btn active" data-day="0">
+                <span class="day-number">Día 1</span>
+                <span class="day-title">Palma & Bellver</span>
+            </button>
+            <button class="day-btn" data-day="1">
+                <span class="day-number">Día 2</span>
+                <span class="day-title">Tramontana</span>
+            </button>
+            <button class="day-btn" data-day="2">
+                <span class="day-number">Día 3</span>
+                <span class="day-title">Norte & Formentor</span>
+            </button>
+            <button class="day-btn" data-day="3">
+                <span class="day-number">Día 4</span>
+                <span class="day-title">Sur, Interior & Este</span>
+            </button>
+            <label class="parking-toggle parking-toggle-nav">
+                <input type="checkbox" id="showParkingsCheckboxNav" />
+                <span><i class="fas fa-parking"></i> Parkings en el mapa</span>
+            </label>
+        </div>
+        <button class="floating-nav-toggle" id="floatingNavToggle" aria-label="Seleccionar día">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
 
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
     <script>
