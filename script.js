@@ -7,6 +7,7 @@ const routeData = {
     // DÍA 1: Palma y alrededores (todo cercano)
     0: {
         title: "Día 1: Calvià - Palma - Castillo Bellver - Catedral",
+        zone: "Palma de Mallorca",
         startCoord: { lat: 39.5617, lng: 2.5147, name: "Calvià (Hotel)" },
         stops: [
             { name: "Castillo de Bellver", lat: 39.5588, lng: 2.6147, type: "stop", description: "Único castillo circular de España — Vistas panorámicas de la bahía de Palma" },
@@ -19,6 +20,7 @@ const routeData = {
     // DÍA 2: Tramontana (eje Ma-10 noroeste)
     1: {
         title: "Día 2: Calvià - Valldemossa - Deià - Sa Foradada - Sóller - Fornalutx",
+        zone: "Serra de Tramontana",
         startCoord: { lat: 39.5617, lng: 2.5147, name: "Calvià (Hotel)" },
         stops: [
             { name: "Valldemossa", lat: 39.7127, lng: 2.6214, type: "stop", description: "Real Cartuja — Chopin & George Sand — Coca de patatas Ca'n Molinas" },
@@ -34,6 +36,7 @@ const routeData = {
     // DÍA 3: Norte — Alcúdia, s'Albufera, Formentor, Pollença
     2: {
         title: "Día 3: Calvià - Alcúdia - s'Albufera - Cap de Formentor - Pollença",
+        zone: "Cap de Formentor y Norte",
         startCoord: { lat: 39.5617, lng: 2.5147, name: "Calvià (Hotel)" },
         stops: [
             { name: "Alcúdia (Casco Antiguo)", lat: 39.8540, lng: 3.1200, type: "stop", description: "Murallas medievales — Ciudad romana Pollentia — Calles empedradas medievales" },
@@ -45,6 +48,7 @@ const routeData = {
     // DÍA 4: Sur y Este — Es Trenc, Interior Es Pla, Costa Este
     3: {
         title: "Día 4: Calvià - Es Trenc - Interior Es Pla - Costa Este",
+        zone: "Costa Este",
         startCoord: { lat: 39.5617, lng: 2.5147, name: "Calvià (Hotel)" },
         stops: [
             { name: "Es Trenc", lat: 39.3280, lng: 3.0170, type: "stop", description: "Playa 2km de arena blanca virgen — Aguas turquesas — Llega temprano" },
@@ -56,6 +60,56 @@ const routeData = {
             { name: "Celler Son Toreó / Es Cós", lat: 39.6432, lng: 3.0130, type: "restaurant", description: "Sineu — Centro geográfico de Mallorca — Cocina kilómetro cero en bodega antigua" },
             { name: "Petra (Casa Natal Junípero Serra)", lat: 39.6010, lng: 3.1050, type: "stop", description: "El fundador de San Francisco nació aquí — Calles medievales intactas — Santuario de Bonany" },
             { name: "Celler Can Ripoll", lat: 39.7200, lng: 2.9105, type: "restaurant", description: "Inca — El celler más histórico y famoso de Mallorca — Cocina tradicional desde siempre" }
+        ]
+    }
+};
+
+// =============================================
+// DATOS DE PARKINGS POR ZONA
+// =============================================
+const parkingsData = {
+    "Palma de Mallorca": {
+        tip: "🅿️ Aparcar en el centro de Palma es complicado. Se recomienda los parkings de pago cerca de atractivos.",
+        parkings: [
+            { name: "Son Moix (Disuasorio)", tipo: "🟢 Gratis + bus", coste: "Gratis + bus urbano", coords: "39.5773, 2.6189" },
+            { name: "Parking Bellver", tipo: "🔴 De pago", coste: "1,50€/hora", coords: "39.5598, 2.6155" },
+            { name: "Parking Puerto de Palma", tipo: "🔴 De pago", coste: "2€/hora", coords: "39.5685, 2.6531" },
+            { name: "Plaza Mayor", tipo: "🔴 De pago", coste: "1,50€/hora", coords: "39.5698, 2.6489" },
+            { name: "Centro Cultural La Misericordia", tipo: "🔴 De pago", coste: "1,20€/hora", coords: "39.5720, 2.6480" },
+            { name: "Santa Catalina (Mercado)", tipo: "🔴 De pago", coste: "1€/hora", coords: "39.5723, 2.6340" }
+        ]
+    },
+    "Serra de Tramontana": {
+        tip: "🅿️ En Valldemossa, Deià y Sóller hay parkings pequeños. Se recomienda ir temprano.",
+        parkings: [
+            { name: "Valldemossa (Centro)", tipo: "🟢 Gratis", coste: "Gratis", coords: "39.7127, 2.6214" },
+            { name: "Deià (Pueblo)", tipo: "🟢 Gratis", coste: "Gratis", coords: "39.7464, 2.6497" },
+            { name: "Sóller (Puerto)", tipo: "🔴 De pago", coste: "1,50€/hora", coords: "39.7949, 2.6958" },
+            { name: "Fornalutx (Pueblo)", tipo: "🟢 Gratis", coste: "Gratis", coords: "39.7972, 2.7295" },
+            { name: "Sa Foradada (Mirador)", tipo: "🟢 Gratis", coste: "Gratis", coords: "39.7295, 2.5880" }
+        ]
+    },
+    "Cap de Formentor y Norte": {
+        tip: "🅿️ Cap de Formentor tiene parking gratuito. Alcúdia y Pollença tienen opciones limitadas.",
+        parkings: [
+            { name: "Cap de Formentor (Faro)", tipo: "🟢 Gratis", coste: "Gratis", coords: "39.9600, 3.2007" },
+            { name: "Alcúdia (Murallas)", tipo: "🟡 Limitado", coste: "Gratuito limitado", coords: "39.8540, 3.1200" },
+            { name: "Parque s'Albufera (Centro)", tipo: "🟢 Gratis", coste: "Gratis", coords: "39.7926, 3.0856" },
+            { name: "Pollença (Pueblo)", tipo: "🟢 Gratis", coste: "Gratis", coords: "39.8783, 3.0126" },
+            { name: "Ses Barques (Mirador)", tipo: "🟢 Gratis", coste: "Gratis", coords: "39.7925, 2.7531" },
+            { name: "Muro (Pueblo)", tipo: "🟢 Gratis", coste: "Gratis", coords: "39.7850, 3.0780" }
+        ]
+    },
+    "Costa Este": {
+        tip: "🅿️ Es Trenc tiene parking en primera línea (pequeño). Cuevas del Drach y Coves d'Artà tienen parkings específicos.",
+        parkings: [
+            { name: "Es Trenc (Playa)", tipo: "🟡 Limitado", coste: "Gratuito limitado", coords: "39.3280, 3.0170" },
+            { name: "Cuevas del Drach (Porto Cristo)", tipo: "🔴 De pago", coste: "Parking + entrada", coords: "39.5254, 3.3362" },
+            { name: "Coves d'Artà (Canyamel)", tipo: "🟢 Gratis", coste: "Gratis", coords: "39.6954, 3.4369" },
+            { name: "Capdepera (Castillo)", tipo: "🔴 De pago", coste: "1€/hora", coords: "39.7031, 3.4411" },
+            { name: "Artà (Municipio)", tipo: "🟢 Gratis", coste: "Gratis", coords: "39.6975, 3.3482" },
+            { name: "Sineu (Es Pla)", tipo: "🟢 Gratis", coste: "Gratis", coords: "39.6432, 3.0130" },
+            { name: "Petra (Centro)", tipo: "🟢 Gratis", coste: "Gratis", coords: "39.6010, 3.1050" }
         ]
     }
 };
@@ -195,7 +249,8 @@ async function displayDay(dayIndex) {
     const day = routeData[dayIndex];
     const routingCoords = []; // solo paradas reales, sin restaurantes
     const bounds = new mapboxgl.LngLatBounds();
-
+    // --- Mostrar parkings relevantes para este día ---
+    showParkingInfo(day.zone);
     // --- Marcador de inicio (Calvià) ---
     const start = day.startCoord;
     routingCoords.push([start.lng, start.lat]);
@@ -279,6 +334,36 @@ async function displayDay(dayIndex) {
             paint: { 'line-color': '#1db954', 'line-width': 5, 'line-opacity': 1 }
         });
     }
+}
+
+// =============================================
+// MOSTRAR INFORMACIÓN DE PARKINGS POR ZONA
+// =============================================
+function showParkingInfo(zone) {
+    const parkingInfo = document.getElementById('parkingInfo');
+    const parkingTitle = document.getElementById('parkingTitle');
+    const parkingTip = document.getElementById('parkingTip');
+    const parkingGrid = document.getElementById('parkingGrid');
+
+    if (!zone || !parkingsData[zone]) {
+        parkingInfo.style.display = 'none';
+        return;
+    }
+
+    const data = parkingsData[zone];
+    parkingTitle.textContent = zone;
+    parkingTip.textContent = data.tip;
+
+    parkingGrid.innerHTML = data.parkings.map(p => `
+        <div class="parking-item">
+            <h4>${p.name}</h4>
+            <p><strong>Tipo:</strong> ${p.tipo}</p>
+            <p><strong>Coste:</strong> ${p.coste}</p>
+            <p class="parking-coords"><small>📍 ${p.coords}</small></p>
+        </div>
+    `).join('');
+
+    parkingInfo.style.display = 'block';
 }
 
 // =============================================
