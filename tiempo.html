@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tiempo en Mallorca | Guía Mallorca</title>
+    <meta name="description" content="Pronóstico del tiempo en Mallorca por zonas: Palma, Tramuntana, Norte, Sur y Este." />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #f0f2f5;
+            --card: #ffffff;
+            --border: #e8ecf0;
+            --text: #1a1a2e;
+            --muted: #6b7280;
+            --accent: #667eea;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        /* ── Header ── */
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 16px rgba(102,126,234,0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+
+        header h1 {
+            font-size: clamp(1.3rem, 4vw, 2rem);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 0.2rem;
+        }
+
+        header .subtitle { font-size: 0.88rem; opacity: 0.85; }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-bottom: 0.7rem;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: white; }
+
+        main { padding: 2rem 0 4rem; }
+
+        /* ── Info box ── */
+        .info-box {
+            background: rgba(102,126,234,0.08);
+            color: #4353a4;
+            padding: 0.9rem 1.2rem;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            font-size: 0.88rem;
+            margin-bottom: 2rem;
+        }
+
+        /* ── Zone section ── */
+        .zone-section { margin-bottom: 3rem; }
+
+        .zone-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .zone-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .zone-header h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .zone-dot.palma    { background: #FF8C00; }
+        .zone-dot.norte    { background: #1976D2; }
+        .zone-dot.tramuntana { background: #388e3c; }
+        .zone-dot.interior { background: #8e24aa; }
+        .zone-dot.sur      { background: #e53935; }
+
+        /* ── Forecast grid ── */
+        .forecast-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        /* ── Cards base ── */
+        .weather-card {
+            background: var(--card);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .weather-card:hover {
+            box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+            transform: translateY(-3px);
+        }
+
+        /* Color accent strip on top */
+        .weather-card.palma    { border-top: 4px solid #FF8C00; }
+        .weather-card.norte    { border-top: 4px solid #1976D2; }
+        .weather-card.tramuntana { border-top: 4px solid #388e3c; }
+        .weather-card.interior { border-top: 4px solid #8e24aa; }
+        .weather-card.sur      { border-top: 4px solid #e53935; }
+
+        /* ── Current card (full width) ── */
+        .weather-card.current {
+            grid-column: 1 / -1;
+            padding: 2rem;
+        }
+
+        .current-body {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        /* Big icon + temp */
+        .current-main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 120px;
+        }
+
+        .current-main .big-icon { font-size: 4rem; line-height: 1; }
+
+        .current-main .big-temp {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+
+        .current-main .temp-range {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-top: 0.2rem;
+        }
+
+        .current-main .condition {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-top: 0.3rem;
+            text-align: center;
+        }
+
+        .current-main .feels-like {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-top: 0.2rem;
+        }
+
+        /* Metrics grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.8rem;
+        }
+
+        .metric {
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 0.9rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .metric-emoji { font-size: 1.5rem; line-height: 1; flex-shrink: 0; }
+
+        .metric-info { display: flex; flex-direction: column; }
+
+        .metric-info .m-label {
+            font-size: 0.7rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+        }
+
+        .metric-info .m-value {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.2;
+        }
+
+        .metric-info .m-unit {
+            font-size: 0.78rem;
+            color: var(--muted);
+        }
+
+        /* Locations */
+        .current-locations {}
+
+        .locations-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.6rem;
+        }
+
+        .location-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.55rem 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 0.4rem;
+            background: var(--bg);
+            font-size: 0.88rem;
+        }
+        .location-row:last-child { margin-bottom: 0; }
+
+        .location-row .loc-name {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-weight: 500;
+        }
+
+        .location-row .loc-temp {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        /* ── Forecast cards (compact) ── */
+        .weather-card.forecast {
+            padding: 1.2rem;
+        }
+
+        .forecast-header {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--muted);
+            margin-bottom: 0.9rem;
+        }
+
+        .forecast-main {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.9rem;
+        }
+
+        .forecast-main .f-icon { font-size: 2.2rem; line-height: 1; }
+
+        .forecast-main .f-temp {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text);
+            line-height: 1;
+        }
+
+        .forecast-main .f-range {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-top: 0.2rem;
+        }
+
+        .forecast-main .f-condition {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-top: 0.2rem;
+        }
+
+        .forecast-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        .f-metric {
+            background: var(--bg);
+            border-radius: 8px;
+            padding: 0.5rem 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .f-metric .fm-icon { font-size: 1rem; }
+
+        .f-metric .fm-info {}
+        .f-metric .fm-label { font-size: 0.62rem; color: var(--muted); font-weight: 600; text-transform: uppercase; }
+        .f-metric .fm-value { font-size: 0.9rem; font-weight: 700; color: var(--text); }
+
+        /* ── Spinner / loading ── */
+        .loading {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--muted);
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .error-message {
+            background: #fff5f5;
+            color: #c62828;
+            padding: 1rem 1.2rem;
+            border-radius: 10px;
+            border-left: 4px solid #e53935;
+            font-size: 0.9rem;
+        }
+
+        .update-time {
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.82rem;
+            margin-top: 1.5rem;
+        }
+
+        /* ── Floating nav ── */
+        .floating-nav {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+
+        .floating-nav-menu {
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            background: white;
+            border-radius: 14px;
+            padding: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            min-width: 200px;
+        }
+
+        .floating-nav.open .floating-nav-menu { display: flex; }
+
+        .floating-nav-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            background: #f5f5f5;
+            color: #333;
+            font-size: 0.88rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.15s;
+        }
+        .floating-nav-menu a:hover { background: #ebebeb; }
+        .floating-nav-menu .fab-link-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+        .floating-nav-menu .fab-link-primary:hover { opacity: 0.9; background: linear-gradient(135deg, #667eea, #764ba2); }
+
+        .floating-nav-toggle {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(102,126,234,0.45);
+            transition: transform 0.2s;
+            font-size: 1.4rem;
+            color: white;
+        }
+        .floating-nav-toggle:hover { transform: scale(1.1); }
+
+        /* ── Responsive ── */
+        @media (max-width: 900px) {
+            .current-body {
+                grid-template-columns: auto 1fr;
+                grid-template-rows: auto auto;
+            }
+            .current-locations {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .forecast-grid { grid-template-columns: repeat(2, 1fr); }
+            .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 520px) {
+            .forecast-grid { grid-template-columns: 1fr; }
+            .weather-card.current { padding: 1.2rem; }
+            .current-body {
+                grid-template-columns: 1fr;
+                gap: 1.2rem;
+            }
+            .current-main { flex-direction: row; align-items: center; gap: 1rem; min-width: unset; }
+            .current-main .big-icon { font-size: 3rem; }
+            .current-main .big-temp { font-size: 2.2rem; }
+            .metrics-grid { grid-template-columns: 1fr 1fr; }
+            .floating-nav { bottom: 16px; right: 16px; }
+        }
+    </style>
+
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Volver</a>
+        <h1><i class="fas fa-cloud-sun"></i> Tiempo en Mallorca</h1>
+        <p class="subtitle">Pronóstico por zonas · Información meteorológica actualizada</p>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+        <div class="info-box">
+            <i class="fas fa-info-circle"></i> Datos meteorológicos por zonas de la isla. Los datos se actualizan automáticamente cada 30 minutos desde <strong>Open-Meteo</strong>.
+        </div>
+
+        <div id="weatherContent">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Cargando pronóstico...</p>
+            </div>
+        </div>
+
+        <div class="update-time" id="updateTime"></div>
+    </div>
+</main>
+
+<!-- Botón flotante de navegación -->
+<div class="floating-nav" id="floatingNav">
+    <div class="floating-nav-menu" id="floatingNavMenu">
+        <a href="index.html" class="fab-link-primary">
+            <i class="fas fa-map"></i> Guía 4 Días
+        </a>
+        <a href="restaurantes-recomendados.html">
+            <i class="fas fa-utensils"></i> Restaurantes
+        </a>
+        <a href="tiempo.html">
+            <i class="fas fa-cloud-sun"></i> Tiempo
+        </a>
+    </div>
+    <button class="floating-nav-toggle" id="floatingNavToggle" aria-label="Navegación">
+        <i class="fas fa-compass"></i>
+    </button>
+</div>
+
+<script>
+// ============================================================
+// CONFIGURACIÓN DE ZONAS CON COORDENADAS
+// ============================================================
+const WEATHER_ZONES = [
+    { name: "Palma", lat: 39.5696, lng: 2.6502, zone: "palma", icon: "🏛️" },
+    { name: "Calvià", lat: 39.5617, lng: 2.5147, zone: "palma", icon: "🌅" },
+    { name: "Pollença", lat: 39.8783, lng: 3.0126, zone: "norte", icon: "⛰️" },
+    { name: "Alcúdia", lat: 39.8540, lng: 3.1200, zone: "norte", icon: "🏖️" },
+    { name: "Valldemossa", lat: 39.7127, lng: 2.6214, zone: "tramuntana", icon: "🏔️" },
+    { name: "Port de Sóller", lat: 39.7949, lng: 2.6958, zone: "tramuntana", icon: "🌲" },
+    { name: "Inca", lat: 39.7200, lng: 2.9105, zone: "interior", icon: "🏘️" },
+    { name: "Manacor", lat: 39.2096, lng: 3.2108, zone: "interior", icon: "🏠" },
+    { name: "Llucmajor", lat: 39.4533, lng: 2.7667, zone: "sur", icon: "☀️" },
+    { name: "Migjorn", lat: 39.1500, lng: 3.3200, zone: "sur", icon: "🌊" }
+];
+
+// ============================================================
+// FUNCIONES DE CLIMA (Open-Meteo)
+// ============================================================
+const OPENMETEO_BASE_URL = "https://api.open-meteo.com/v1/forecast";
+
+async function fetchWeatherData(lat, lng) {
+    const cacheKey = `weather_${lat}_${lng}`;
+    const cached = localStorage.getItem(cacheKey);
+    const cacheTime = localStorage.getItem(`${cacheKey}_time`);
+
+    // Usar cache si está fresco (menos de 30 min)
+    if (cached && cacheTime && Date.now() - parseInt(cacheTime) < 30 * 60000) {
+        return JSON.parse(cached);
+    }
+
+    try {
+        const params = new URLSearchParams({
+            latitude: lat,
+            longitude: lng,
+            current: "temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m,pressure_msl,visibility,precipitation,uv_index",
+            daily: "weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,wind_speed_10m_max,wind_direction_10m_dominant,uv_index_max,cloudcover_mean",
+            temperature_unit: "celsius",
+            wind_speed_unit: "kmh",
+            timezone: "Europe/Madrid"
+        });
+
+        const response = await fetch(`${OPENMETEO_BASE_URL}?${params}`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const data = await response.json();
+        
+        // Cachear
+        localStorage.setItem(cacheKey, JSON.stringify(data));
+        localStorage.setItem(`${cacheKey}_time`, Date.now().toString());
+        
+        return data;
+    } catch (error) {
+        console.error(`Error fetching weather for ${lat},${lng}:`, error);
+        return null;
+    }
+}
+
+function getWeatherDescription(code) {
+    // WMO Weather interpretation codes
+    const codes = {
+        0: "Despejado",
+        1: "Mayormente despejado",
+        2: "Parcialmente nublado",
+        3: "Nublado",
+        45: "Niebla",
+        48: "Niebla depositada",
+        51: "Llovizna",
+        53: "Llovizna moderada",
+        55: "Llovizna densa",
+        61: "Lluvia débil",
+        63: "Lluvia moderada",
+        65: "Lluvia fuerte",
+        71: "Nieve débil",
+        73: "Nieve moderada",
+        75: "Nieve fuerte",
+        80: "Chubascos débiles",
+        81: "Chubascos moderados",
+        82: "Chubascos fuertes",
+        85: "Chubascos de nieve débiles",
+        86: "Chubascos de nieve fuertes",
+        95: "Tormenta",
+        96: "Tormenta con granizo débil",
+        99: "Tormenta con granizo fuerte"
+    };
+    return codes[code] || "Desconocido";
+}
+
+function getWindDirection(degrees) {
+    const directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSO', 'SO', 'OSO', 'O', 'ONO', 'NO', 'NNO'];
+    const index = Math.round(((degrees ?? 0) / 22.5)) % 16;
+    return directions[index];
+}
+
+function getUVDescription(index) {
+    if (index < 3) return "Bajo";
+    if (index < 6) return "Moderado";
+    if (index < 8) return "Alto";
+    if (index < 11) return "Muy alto";
+    return "Extremo";
+}
+
+function getUVEmoji(index) {
+    if (index < 3) return "🟢";
+    if (index < 6) return "🟡";
+    if (index < 8) return "🟠";
+    if (index < 11) return "🔴";
+    return "🟣";
+}
+
+function getWeatherIcon(code) {
+    if (code === 0 || code === 1) return "☀️";
+    if (code === 2 || code === 3) return "☁️";
+    if (code === 45 || code === 48) return "🌫️";
+    if (code >= 51 && code <= 67) return "🌧️";
+    if (code >= 71 && code <= 86) return "❄️";
+    if (code >= 80 && code <= 82) return "⛈️";
+    if (code >= 95 && code <= 99) return "⛈️";
+    return "❓";
+}
+
+async function loadAllWeather() {
+    const container = document.getElementById('weatherContent');
+    container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Cargando pronóstico...</p></div>';
+
+    const weatherByZone = {};
+    WEATHER_ZONES.forEach(zone => {
+        if (!weatherByZone[zone.zone]) {
+            weatherByZone[zone.zone] = {
+                current: [],
+                forecast: [[], [], []]  // 3 días de previsión
+            };
+        }
+    });
+
+    // Cargar datos para cada ubicación
+    for (const zone of WEATHER_ZONES) {
+        const data = await fetchWeatherData(zone.lat, zone.lng);
+        if (data && data.current) {
+            const current = data.current;
+            const daily = data.daily || {};
+            
+            // Datos actuales
+            weatherByZone[zone.zone].current.push({
+                name: zone.name,
+                icon: zone.icon,
+                temp: Math.round(current.temperature_2m),
+                apparentTemp: Math.round(current.apparent_temperature || current.temperature_2m),
+                tempMax: Math.round(daily.temperature_2m_max?.[0] || current.temperature_2m),
+                tempMin: Math.round(daily.temperature_2m_min?.[0] || current.temperature_2m),
+                condition: getWeatherDescription(current.weather_code),
+                weatherIcon: getWeatherIcon(current.weather_code),
+                humidity: current.relative_humidity_2m || "N/A",
+                wind: Math.round(current.wind_speed_10m || 0),
+                windDirection: getWindDirection(current.wind_direction_10m),
+                windDegrees: Math.round(current.wind_direction_10m || 0),
+                precipitation: daily.precipitation_sum?.[0] || 0,
+                pressure: Math.round(current.pressure_msl || 0),
+                visibility: Math.round((current.visibility || 10000) / 1000),
+                uvIndex: Math.round((current.uv_index || 0) * 10) / 10,
+                uvDesc: getUVDescription(current.uv_index || 0),
+                uvEmoji: getUVEmoji(current.uv_index || 0),
+                rainProb: daily.precipitation_probability_max?.[0] || 0,
+                cloudcover: daily.cloudcover_mean?.[0] || 0
+            });
+
+            // Previsión para los próximos 3 días
+            for (let day = 1; day <= 3 && daily.temperature_2m_max; day++) {
+                if (daily.temperature_2m_max[day]) {
+                    weatherByZone[zone.zone].forecast[day - 1].push({
+                        name: zone.name,
+                        icon: zone.icon,
+                        date: getDateString(day),
+                        temp: Math.round((daily.temperature_2m_max[day] + daily.temperature_2m_min[day]) / 2),
+                        tempMax: Math.round(daily.temperature_2m_max[day]),
+                        tempMin: Math.round(daily.temperature_2m_min[day]),
+                        condition: getWeatherDescription(daily.weather_code[day]),
+                        weatherIcon: getWeatherIcon(daily.weather_code[day]),
+                        humidity: "N/A",
+                        wind: Math.round(daily.wind_speed_10m_max?.[day] || 0),
+                        windDirection: getWindDirection(daily.wind_direction_10m_dominant?.[day]),
+                        windDegrees: Math.round(daily.wind_direction_10m_dominant?.[day] || 0),
+                        precipitation: daily.precipitation_sum?.[day] || 0,
+                        rainProb: daily.precipitation_probability_max?.[day] || 0,
+                        uvIndex: Math.round((daily.uv_index_max?.[day] || 0) * 10) / 10,
+                        uvDesc: getUVDescription(daily.uv_index_max?.[day] || 0),
+                        uvEmoji: getUVEmoji(daily.uv_index_max?.[day] || 0),
+                        cloudcover: daily.cloudcover_mean?.[day] || 0
+                    });
+                }
+            }
+        }
+    }
+
+    // Renderizar
+    renderWeatherCards(weatherByZone);
+    
+    // Actualizar hora
+    const now = new Date().toLocaleString('es-ES');
+    document.getElementById('updateTime').innerHTML = `<i class="fas fa-history"></i> Última actualización: ${now}`;
+}
+
+function getDateString(daysFromNow) {
+    const date = new Date();
+    date.setDate(date.getDate() + daysFromNow);
+    const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+    return days[date.getDay()];
+}
+
+function renderWeatherCards(weatherByZone) {
+    const container = document.getElementById('weatherContent');
+
+    const zoneNames = {
+        palma:      "Palma & Alrededores",
+        norte:      "Norte",
+        tramuntana: "Tramuntana",
+        interior:   "Interior",
+        sur:        "Sur"
+    };
+
+    const zoneOrder = ['palma', 'norte', 'tramuntana', 'interior', 'sur'];
+    let html = '';
+
+    for (const zone of zoneOrder) {
+        const data = weatherByZone[zone];
+        if (!data || data.current.length === 0) continue;
+
+        const cw  = data.current;
+        const fw  = data.forecast;
+        const rep = cw[0]; // representative location
+
+        // Promedios zona actual
+        const avg = (arr, key) => Math.round(arr.reduce((s, w) => s + w[key], 0) / arr.length);
+        const avgTemp    = avg(cw, 'temp');
+        const avgMax     = avg(cw, 'tempMax');
+        const avgMin     = avg(cw, 'tempMin');
+        const avgFeels   = avg(cw, 'apparentTemp');
+        const avgHum     = avg(cw, 'humidity');
+        const avgWind    = avg(cw, 'wind');
+        const avgPress   = avg(cw, 'pressure');
+        const avgVis     = avg(cw, 'visibility');
+        const avgUV      = (cw.reduce((s,w) => s + w.uvIndex, 0) / cw.length).toFixed(1);
+        const avgRain    = avg(cw, 'rainProb');
+        const totalPrecip = cw.reduce((s,w) => s + w.precipitation, 0).toFixed(1);
+
+        html += `
+        <div class="zone-section">
+            <div class="zone-header">
+                <div class="zone-dot ${zone}"></div>
+                <h2>${zoneNames[zone]}</h2>
+            </div>
+
+            <div class="forecast-grid">
+
+                <!-- ── TARJETA HOY ── -->
+                <div class="weather-card current ${zone}">
+                    <div class="current-body">
+
+                        <!-- Columna izquierda: icono + temp + condición -->
+                        <div class="current-main">
+                            <div class="big-icon">${rep.weatherIcon}</div>
+                            <div class="big-temp">${avgTemp}°</div>
+                            <div class="temp-range">${avgMin}° / ${avgMax}°</div>
+                            <div class="condition">${rep.condition}</div>
+                            <div class="feels-like">Sensación ${avgFeels}°</div>
+                        </div>
+
+                        <!-- Columna centro: métricas -->
+                        <div class="metrics-grid">
+                            <div class="metric">
+                                <span class="metric-emoji">💧</span>
+                                <div class="metric-info">
+                                    <span class="m-label">Humedad</span>
+                                    <span class="m-value">${avgHum}<span class="m-unit">%</span></span>
+                                </div>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-emoji">💨</span>
+                                <div class="metric-info">
+                                    <span class="m-label">Viento</span>
+                                    <span class="m-value">${avgWind}<span class="m-unit"> km/h</span></span>
+                                </div>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-emoji">☔</span>
+                                <div class="metric-info">
+                                    <span class="m-label">Prob. lluvia</span>
+                                    <span class="m-value">${avgRain}<span class="m-unit">%</span></span>
+                                </div>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-emoji">${rep.uvEmoji}</span>
+                                <div class="metric-info">
+                                    <span class="m-label">Índice UV</span>
+                                    <span class="m-value">${avgUV} <span class="m-unit">${rep.uvDesc}</span></span>
+                                </div>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-emoji">🔵</span>
+                                <div class="metric-info">
+                                    <span class="m-label">Presión</span>
+                                    <span class="m-value">${avgPress}<span class="m-unit"> mb</span></span>
+                                </div>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-emoji">👁️</span>
+                                <div class="metric-info">
+                                    <span class="m-label">Visibilidad</span>
+                                    <span class="m-value">${avgVis}<span class="m-unit"> km</span></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Columna derecha: ubicaciones -->
+                        <div class="current-locations">
+                            <div class="locations-label"><i class="fas fa-map-marker-alt"></i> Ubicaciones</div>
+                            ${cw.map(w => `
+                                <div class="location-row">
+                                    <span class="loc-name"><span>${w.icon}</span>${w.name}</span>
+                                    <span class="loc-temp">${w.temp}°C</span>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ── TARJETAS PREVISIÓN ── -->
+                ${fw.map((dayWeathers, di) => {
+                    if (!dayWeathers || dayWeathers.length === 0) return '';
+                    const dr = dayWeathers[0];
+                    const davg = (key) => Math.round(dayWeathers.reduce((s,w) => s + w[key], 0) / dayWeathers.length);
+                    const dTemp  = davg('temp');
+                    const dMax   = davg('tempMax');
+                    const dMin   = davg('tempMin');
+                    const dWind  = davg('wind');
+                    const dRain  = davg('rainProb');
+                    const dUV    = (dayWeathers.reduce((s,w) => s + w.uvIndex, 0) / dayWeathers.length).toFixed(1);
+                    const dPrec  = dayWeathers.reduce((s,w) => s + w.precipitation, 0).toFixed(1);
+                    return `
+                        <div class="weather-card forecast ${zone}">
+                            <div class="forecast-header">${dr.date}</div>
+                            <div class="forecast-main">
+                                <div class="f-icon">${dr.weatherIcon}</div>
+                                <div>
+                                    <div class="f-temp">${dTemp}°</div>
+                                    <div class="f-range">${dMin}° / ${dMax}°</div>
+                                    <div class="f-condition">${dr.condition}</div>
+                                </div>
+                            </div>
+                            <div class="forecast-metrics">
+                                <div class="f-metric">
+                                    <span class="fm-icon">💨</span>
+                                    <div class="fm-info">
+                                        <div class="fm-label">Viento</div>
+                                        <div class="fm-value">${dWind} km/h</div>
+                                    </div>
+                                </div>
+                                <div class="f-metric">
+                                    <span class="fm-icon">☔</span>
+                                    <div class="fm-info">
+                                        <div class="fm-label">Lluvia</div>
+                                        <div class="fm-value">${dRain}%</div>
+                                    </div>
+                                </div>
+                                <div class="f-metric">
+                                    <span class="fm-icon">${dr.uvEmoji}</span>
+                                    <div class="fm-info">
+                                        <div class="fm-label">UV</div>
+                                        <div class="fm-value">${dUV}</div>
+                                    </div>
+                                </div>
+                                <div class="f-metric">
+                                    <span class="fm-icon">🌧️</span>
+                                    <div class="fm-info">
+                                        <div class="fm-label">Precip.</div>
+                                        <div class="fm-value">${dPrec} mm</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+
+            </div>
+        </div>
+        `;
+    }
+
+    if (!html) {
+        container.innerHTML = `<div class="error-message"><i class="fas fa-exclamation-circle"></i> No se pudo cargar el pronóstico. Recarga la página e intenta de nuevo.</div>`;
+    } else {
+        container.innerHTML = html;
+    }
+}
+
+// ============================================================
+// BOTÓN FLOTANTE
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+    const nav = document.getElementById('floatingNav');
+    const toggle = document.getElementById('floatingNavToggle');
+    
+    if (toggle) {
+        toggle.addEventListener('click', e => {
+            e.stopPropagation();
+            nav.classList.toggle('open');
+        });
+    }
+
+    document.addEventListener('click', e => {
+        if (!nav.contains(e.target)) nav.classList.remove('open');
+    });
+
+    // Cargar datos meteorológicos al iniciar
+    loadAllWeather();
+});
+</script>
+</body>
+</html>

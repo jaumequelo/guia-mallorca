@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Los Mejores Restaurantes Calidad/Precio de Mallorca | Guía Mallorca</title>
+    <meta name="description" content="Los mejores restaurantes calidad/precio de Mallorca: Palma, Tramuntana, Norte, Sur y Este. Mapa interactivo y guía completa." />
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #ff6b35;
+            --restaurant-color: #FF8C00;
+            --dark-bg: #0f1419;
+            --light-bg: #f5f7fa;
+            --border-color: #e0e6ed;
+            --text-dark: #1a1a1a;
+            --text-light: #666666;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* ============ HEADER ============ */
+        header {
+            background: linear-gradient(135deg, #d46d1f 0%, #FF8C00 60%, #ffb347 100%);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+
+        header h1 {
+            font-size: clamp(1.3rem, 4vw, 2.1rem);
+            margin-bottom: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        header .subtitle { font-size: 0.92rem; opacity: 0.92; font-weight: 300; }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: white;
+            text-decoration: none;
+            font-size: 0.85rem;
+            opacity: 0.85;
+            margin-bottom: 0.6rem;
+            transition: opacity 0.2s;
+        }
+        .back-link:hover { opacity: 1; }
+
+        /* ============ LAYOUT ============ */
+        main { padding: 2rem 1rem; }
+
+        .page-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        @media (max-width: 1024px) {
+            .page-layout { grid-template-columns: 1fr; }
+        }
+
+        /* ============ MAP ============ */
+        .map-wrapper {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            background: white;
+        }
+
+        @media (min-width: 1025px) {
+            .map-wrapper {
+                position: sticky;
+                top: 110px;
+                align-self: start;
+                height: fit-content;
+                max-height: calc(100vh - 125px);
+                overflow: hidden;
+            }
+        }
+
+        #restaurantMap {
+            width: 100%;
+            height: 520px;
+        }
+
+        @media (max-width: 1024px) {
+            #restaurantMap { height: 360px; }
+        }
+
+        .map-legend {
+            padding: 0.75rem 1rem;
+            background: white;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1.2rem;
+            font-size: 0.78rem;
+            color: var(--text-light);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+        }
+
+        /* ============ FILTER TABS ============ */
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .filter-btn {
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            border: 2px solid var(--border-color);
+            background: white;
+            color: var(--text-dark);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover { border-color: var(--restaurant-color); color: var(--restaurant-color); }
+        .filter-btn.active { background: var(--restaurant-color); border-color: var(--restaurant-color); color: white; }
+
+        /* ============ RESTAURANT LIST ============ */
+        .list-column { overflow-y: auto; }
+
+        .zone-group { margin-bottom: 1.75rem; }
+
+        .zone-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--restaurant-color);
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 2px solid #ffe4b5;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .restaurant-card {
+            background: white;
+            border-radius: 12px;
+            padding: 0.9rem 1.1rem;
+            margin-bottom: 0.65rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            border: 1.5px solid transparent;
+            cursor: pointer;
+            transition: all 0.22s;
+        }
+
+        .restaurant-card:hover,
+        .restaurant-card.highlighted {
+            border-color: var(--restaurant-color);
+            box-shadow: 0 4px 14px rgba(255,140,0,0.18);
+            transform: translateX(-3px);
+        }
+
+        .restaurant-card.hidden { display: none; }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .card-name {
+            font-weight: 700;
+            font-size: 0.93rem;
+            color: var(--text-dark);
+            line-height: 1.3;
+        }
+
+        .card-rank {
+            background: var(--restaurant-color);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 0.15rem 0.45rem;
+            border-radius: 10px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .card-info-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #e8f4fd;
+            color: #0066cc;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-decoration: none;
+            flex-shrink: 0;
+            transition: background 0.18s, transform 0.15s;
+            border: 1.5px solid #b3d4f0;
+        }
+        .card-info-btn:hover {
+            background: #0066cc;
+            color: white;
+            transform: scale(1.12);
+        }
+
+        .card-address {
+            font-size: 0.78rem;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .card-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 0.5rem;
+        }
+
+        .tag {
+            font-size: 0.72rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .tag-type { background: #fff3e0; color: #c85000; }
+        .tag-price { background: #e8f5e9; color: #2e7d32; }
+        .tag-season { background: #fff8e1; color: #f57f17; }
+
+        /* User Location Marker */
+        .user-location-marker {
+            width: 20px; height: 20px;
+            background: #0066cc;
+            border: 3px solid white;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0,102,204,0.6);
+            cursor: pointer;
+        }
+        .user-location-pulse {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            animation: userLocPulse 2s ease-in-out infinite;
+        }
+        @keyframes userLocPulse {
+            0%   { box-shadow: inset 0 0 0 3px rgba(0,102,204,0.4); }
+            50%  { box-shadow: inset 0 0 0 1px rgba(0,102,204,0.2); }
+            100% { box-shadow: inset 0 0 0 3px rgba(0,102,204,0.4); }
+        }
+        /* Distance badge in restaurant cards */
+        .rest-distance-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            margin-top: 0.45rem;
+            font-size: 0.76rem;
+            font-weight: 600;
+            color: #0066cc;
+            background: #f0f7ff;
+            border-left: 3px solid #0066cc;
+            border-radius: 0 6px 6px 0;
+            padding: 0.2rem 0.6rem 0.2rem 0.5rem;
+        }
+        .rest-distance-badge .dist-km { font-weight: 700; }
+        .rest-distance-badge .dist-label { color: #666; font-weight: 400; }
+
+        /* ============ TIPS SECTION ============ */
+        .tips-section {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+            border-left: 4px solid var(--restaurant-color);
+        }
+
+        .tips-section h2 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--restaurant-color);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .tips-section ul { list-style: none; padding: 0; }
+        .tips-section li {
+            font-size: 0.88rem;
+            color: var(--text-dark);
+            padding: 0.3rem 0;
+            padding-left: 1.4rem;
+            position: relative;
+        }
+        .tips-section li::before {
+            content: '💡';
+            position: absolute;
+            left: 0;
+        }
+
+        /* ============ FOOTER ============ */
+        footer {
+            background: var(--dark-bg);
+            color: #aaa;
+            padding: 1.5rem 0;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        footer a { color: #ccc; text-decoration: none; }
+        footer a:hover { color: white; }
+
+        /* ============ MAPBOX POPUP ============ */
+        .mapboxgl-popup-content {
+            border-radius: 10px;
+            padding: 0.85rem 1rem;
+            max-width: 230px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+        }
+
+        .popup-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            margin-bottom: 0.3rem;
+        }
+
+        .popup-meta { font-size: 0.78rem; color: var(--text-light); }
+        .popup-price { color: #2e7d32; font-weight: 600; margin-top: 0.2rem; display: block; }
+        .popup-gmaps {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            margin-top: 0.55rem;
+            font-size: 0.76rem;
+            font-weight: 600;
+            color: #0066cc;
+            text-decoration: none;
+            padding: 0.2rem 0.5rem;
+            background: #e8f4fd;
+            border-radius: 6px;
+            border: 1px solid #b3d4f0;
+            transition: background 0.15s;
+        }
+        .popup-gmaps:hover { background: #0066cc; color: white; }
+
+        /* ============ MARKER STYLES ============ */
+        .rest-marker {
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, #FF8C00, #d46d1f);
+            border: 2px solid white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(255,140,0,0.45);
+            cursor: pointer;
+            color: white;
+            font-size: 14px;
+            transition: transform 0.2s;
+        }
+
+        .rest-marker:hover { transform: scale(1.2); }
+
+        .rest-marker.zone-norte { background: linear-gradient(135deg, #1565C0, #1976D2); }
+        .rest-marker.zone-tramuntana { background: linear-gradient(135deg, #2e7d32, #388e3c); }
+        .rest-marker.zone-interior { background: linear-gradient(135deg, #6a1b9a, #8e24aa); }
+        .rest-marker.zone-sur { background: linear-gradient(135deg, #c62828, #e53935); }
+        .rest-marker.zone-otros { background: linear-gradient(135deg, #37474f, #546e7a); }
+        .rest-marker.zone-vistas { background: linear-gradient(135deg, #00796b, #00acc1); }
+
+        /* === Botón flotante === */
+        .floating-nav {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+        .floating-nav-menu {
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            background: white;
+            border-radius: 14px;
+            padding: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            min-width: 200px;
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+        .floating-nav.open .floating-nav-menu { display: flex; }
+        .floating-nav-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            background: #f5f5f5;
+            color: #333;
+            font-size: 0.88rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.15s;
+        }
+        .floating-nav-menu a:hover { background: #e8e8e8; }
+        .floating-nav-menu .fab-link-primary {
+            background: linear-gradient(135deg, #ff6b35, #e64a19);
+            color: white;
+        }
+        .floating-nav-menu .fab-link-primary:hover { background: linear-gradient(135deg, #e64a19, #bf360c); }
+        .floating-nav-toggle {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b35, #e64a19);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(255,107,53,0.45);
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-size: 1.4rem;
+            color: white;
+        }
+        .floating-nav-toggle:hover { transform: scale(1.1); box-shadow: 0 6px 22px rgba(255,107,53,0.55); }
+        @media (max-width: 480px) {
+            .floating-nav { bottom: 16px; right: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Volver a la Guía</a>
+        <h1><i class="fas fa-utensils"></i> Los Mejores Restaurantes Calidad/Precio de Mallorca</h1>
+        <p class="subtitle">Mallorca · Selección por zonas · Del centro histórico a los rincones más secretos</p>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+
+        <!-- Tips section -->
+        <div class="tips-section">
+            <h2><i class="fas fa-lightbulb"></i> Consejos para ahorrar</h2>
+            <ul>
+                <li>Pide siempre el <strong>menú del día</strong> (mediodía, L-V): en Mallorca oscila entre 12-18 € con primer plato, segundo, postre y bebida.</li>
+                <li>Los <strong>lunes y martes</strong> muchos locales reducen precios para atraer clientela local.</li>
+                <li>Sigue a los locales: en pueblos como <strong>Sineu, Inca o Sa Pobla</strong> encontrarás cocina auténtica a precios muy inferiores a los de la costa.</li>
+                <li>Los mercados como el <strong>Mercat de l'Olivar</strong> (Palma) o el <strong>Mercat de Sineu</strong> (miércoles) tienen barras con comida casera a precios de mercado.</li>
+            </ul>
+        </div>
+
+        <!-- Main layout -->
+        <div class="page-layout">
+
+            <!-- MAP -->
+            <div class="map-wrapper">
+                <div id="restaurantMap"></div>
+                <div class="map-legend">
+                    <div class="legend-item"><div class="legend-dot" style="background:#FF8C00"></div> Palma</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#1976D2"></div> Norte</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#388e3c"></div> Tramuntana</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#8e24aa"></div> Interior</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#e53935"></div> Sur</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#546e7a"></div> Otros</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#00acc1"></div> Con Vistas</div>
+                </div>
+            </div>
+
+            <!-- LIST -->
+            <div class="list-column">
+
+                <!-- Filter buttons -->
+                <div class="filter-bar">
+                    <button class="filter-btn active" data-zone="all">Todos (55)</button>
+                    <button class="filter-btn" data-zone="palma">Palma (14)</button>
+                    <button class="filter-btn" data-zone="norte">Norte (3)</button>
+                    <button class="filter-btn" data-zone="tramuntana">Tramuntana (8)</button>
+                    <button class="filter-btn" data-zone="interior">Interior (15)</button>
+                    <button class="filter-btn" data-zone="sur">Sur (6)</button>
+                    <button class="filter-btn" data-zone="otros">Otros (2)</button>
+                    <button class="filter-btn" data-zone="vistas">Con Vistas (8)</button>
+                </div>
+
+                <!-- PALMA -->
+                <div class="zone-group" data-zone="palma">
+                    <div class="zone-title"><i class="fas fa-city"></i> Palma de Mallorca</div>
+
+                    <div class="restaurant-card" data-zone="palma" data-id="1" onclick="flyToRestaurant(1)">
+                        <div class="card-top"><div class="card-name">Ca'n Joan de S'Aigo</div><div class="card-rank">#1</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Carrer de Can Sanç, 10 · Palma</div>
+                        <div class="card-meta"><span class="tag tag-type">Tradicional mallorquín</span><span class="tag tag-price">~8 €</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="palma" data-id="2" onclick="flyToRestaurant(2)">
+                        <div class="card-top"><div class="card-name">Es Baluard Restaurant</div><div class="card-rank">#2</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Junto a las murallas · Palma</div>
+                        <div class="card-meta"><span class="tag tag-type">Cocina mallorquina</span><span class="tag tag-price">Menú ~13 €</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="palma" data-id="3" onclick="flyToRestaurant(3)">
+                        <div class="card-top"><div class="card-name">Sa Roqueta</div><div class="card-rank">#3</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Carrer Sirena, 11 &middot; Palma</div>
+                        <div class="card-meta"><span class="tag tag-type">Pescado, marisco y arroces</span><span class="tag tag-price">~25-35 &euro;</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="palma" data-id="4" onclick="flyToRestaurant(4)">
+                        <div class="card-top"><div class="card-name">Restaurant Sa Llotja</div><div class="card-rank">#4</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Passeig de Sagrera · Palma</div>
+                        <div class="card-meta"><span class="tag tag-type">Arroces y mariscos</span><span class="tag tag-price">~18 €</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="palma" data-id="5" onclick="flyToRestaurant(5)">
+                        <div class="card-top"><div class="card-name">Can Lluc</div><div class="card-rank">#5</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Barrio Santa Catalina · Palma</div>
+                        <div class="card-meta"><span class="tag tag-type">Cocina mallorquina</span><span class="tag tag-price">Menú ~10 €</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="palma" data-id="6" onclick="flyToRestaurant(6)">
+                        <div class="card-top"><div class="card-name">Bar España</div><div class="card-rank">#6</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Carrer de Can Fortuny, 7 · Palma</div>
+                        <div class="card-meta"><span class="tag tag-type">Pa amb oli y tapas</span><span class="tag tag-price">~8 €</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="palma" data-id="7" onclick="flyToRestaurant(7)">
+                        <div class="card-top"><div class="card-name">Sa Trobada</div><div class="card-rank">#7</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Centro de Palma</div>
+                        <div class="card-meta"><span class="tag tag-type">Mediterránea</span><span class="tag tag-price">~14 €</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="palma" data-id="8" onclick="flyToRestaurant(8)">
+                        <div class="card-top"><div class="card-name">Casa Julio</div><div class="card-rank">#8</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Centro de Palma</div>
+                        <div class="card-meta"><span class="tag tag-type">Española</span><span class="tag tag-price">~15 €</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="palma" data-id="9" onclick="flyToRestaurant(9)">
+                        <div class="card-top"><div class="card-name">NUS</div><div class="card-rank">#9</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Barrio Santa Catalina · Palma</div>
+                        <div class="card-meta"><span class="tag tag-type">Asiática-mediterránea</span><span class="tag tag-price">~25 €</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="palma" data-id="10" onclick="flyToRestaurant(10)">
+                        <div class="card-top"><div class="card-name">Mouna</div><div class="card-rank">#10</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Barrio Santa Catalina · Palma</div>
+                        <div class="card-meta"><span class="tag tag-type">Vegano / Orgánico</span><span class="tag tag-price">~20 €</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="palma" data-id="11" onclick="flyToRestaurant(11)">
+                        <div class="card-top"><div class="card-name">Forn des Teatre</div><div class="card-rank">#11</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Plaça Weyler, 9 · Palma</div>
+                        <div class="card-meta"><span class="tag tag-type">Panadería / Cafetería</span><span class="tag tag-price">~5 €</span></div>
+                    </div>
+                    <div class="restaurant-card" data-zone="palma" data-id="32" onclick="flyToRestaurant(32)">
+                        <div class="card-top"><div class="card-name">Ca n'Eduardo</div><div class="card-rank">#32</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Contramuelle Mollet, 3 &middot; Palma</div>
+                        <div class="card-meta"><span class="tag tag-type">Caldereta de langosta</span><span class="tag tag-price">~35-50 &euro;</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="palma" data-id="33" onclick="flyToRestaurant(33)">
+                        <div class="card-top"><div class="card-name">La Parada del Mar</div><div class="card-rank">#33</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Paseo Marítimo (frente al Palacio de Miravent) &middot; Palma</div>
+                        <div class="card-meta"><span class="tag tag-type">Pescadería-restaurante</span><span class="tag tag-price">~20-30 &euro;</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="palma" data-id="34" onclick="flyToRestaurant(34)">
+                        <div class="card-top"><div class="card-name">Casa Fernando</div><div class="card-rank">#34</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Calle Trafalgar, 27 &middot; Ciudad Jardín, Palma</div>
+                        <div class="card-meta"><span class="tag tag-type">Pescado a la plancha</span><span class="tag tag-price">~20-30 &euro;</span></div>
+                    </div>                </div>
+
+                <!-- NORTE -->
+                <div class="zone-group" data-zone="norte">
+                    <div class="zone-title"><i class="fas fa-compass"></i> Norte de Mallorca</div>
+
+                    <div class="restaurant-card" data-zone="norte" data-id="12" onclick="flyToRestaurant(12)">
+                        <div class="card-top"><div class="card-name">Can Matevet</div><div class="card-rank">#12</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Carrer de Teodor Canet, 8 · Port d'Alcúdia</div>
+                        <div class="card-meta"><span class="tag tag-type">Marisco / Tapas</span><span class="tag tag-price">~25 €</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="norte" data-id="13" onclick="flyToRestaurant(13)">
+                        <div class="card-top"><div class="card-name">Bar des Peix</div><div class="card-rank">#13</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Moll de Pescadors &middot; Port de Pollen&ccedil;a</div>
+                        <div class="card-meta"><span class="tag tag-type">Mariscos frescos de puerto</span><span class="tag tag-price">~20-30 &euro;</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="norte" data-id="14" onclick="flyToRestaurant(14)">
+                        <div class="card-top"><div class="card-name">AmázO</div><div class="card-rank">#14</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Carrer de Formentor · Puerto Pollença</div>
+                        <div class="card-meta"><span class="tag tag-type">Sudamericana-mediterránea</span><span class="tag tag-price">~30 €</span></div>
+                    </div>
+                </div>
+
+                <!-- TRAMUNTANA -->
+                <div class="zone-group" data-zone="tramuntana">
+                    <div class="zone-title"><i class="fas fa-mountain"></i> Serra de Tramuntana</div>
+
+                    <div class="restaurant-card" data-zone="tramuntana" data-id="15" onclick="flyToRestaurant(15)">
+                        <div class="card-top"><div class="card-name">Ca'n Toni</div><div class="card-rank">#15</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Centro de Sóller</div>
+                        <div class="card-meta"><span class="tag tag-type">Cocina casera mallorquina</span><span class="tag tag-price">~15 €</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="tramuntana" data-id="16" onclick="flyToRestaurant(16)">
+                        <div class="card-top"><div class="card-name">Restaurant Ca'n Boqueta</div><div class="card-rank">#16</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Sóller</div>
+                        <div class="card-meta"><span class="tag tag-type">Mediterránea</span><span class="tag tag-price">~25 €</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="tramuntana" data-id="17" onclick="flyToRestaurant(17)">
+                        <div class="card-top"><div class="card-name">Do de Pit</div><div class="card-rank">#17</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Sóller</div>
+                        <div class="card-meta"><span class="tag tag-type">Mallorquina moderna</span><span class="tag tag-price">~22 €</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="tramuntana" data-id="18" onclick="flyToRestaurant(18)">
+                        <div class="card-top"><div class="card-name">Restaurant Miramar</div><div class="card-rank">#18</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Valldemossa</div>
+                        <div class="card-meta"><span class="tag tag-type">Pescado y arroces</span><span class="tag tag-price">Menú ~18 €</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="tramuntana" data-id="19" onclick="flyToRestaurant(19)">
+                        <div class="card-top"><div class="card-name">Sebastian</div><div class="card-rank">#19</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Carrer de Sa Font · Deià</div>
+                        <div class="card-meta"><span class="tag tag-type">Mediterránea-asiática</span><span class="tag tag-price">~35 €</span></div>
+                    </div>
+                    <div class="restaurant-card" data-zone="tramuntana" data-id="31" onclick="flyToRestaurant(31)">
+                        <div class="card-top"><div class="card-name">Ca's Patró March</div><div class="card-rank">#31</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Camino de la Cala Bajo &middot; Cala Dei&agrave;</div>
+                        <div class="card-meta"><span class="tag tag-type">Pescado y marisco de roca</span><span class="tag tag-price">~45-60 &euro;</span><span class="tag tag-season">⏳ Temporada</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="tramuntana" data-id="35" onclick="flyToRestaurant(35)">
+                        <div class="card-top"><div class="card-name">Ses Oliveres</div><div class="card-rank">#35</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Passeig Es Traves, 18 &middot; Port de Sóller</div>
+                        <div class="card-meta"><span class="tag tag-type">Gamba roja de Sóller</span><span class="tag tag-price">~25-35 &euro;</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="tramuntana" data-id="36" onclick="flyToRestaurant(36)">
+                        <div class="card-top"><div class="card-name">Bens d'Avall</div><div class="card-rank">#36</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Ctra. Sóller-Dei&agrave; km 56 &middot; Costa Dei&agrave;</div>
+                        <div class="card-meta"><span class="tag tag-type">Cocina balear &middot; Michelin</span><span class="tag tag-price">~50-70 &euro;</span><span class="tag tag-season">⏳ Temporada</span></div>
+                    </div>                </div>
+
+                <!-- INTERIOR -->
+                <div class="zone-group" data-zone="interior">
+                    <div class="zone-title"><i class="fas fa-wheat-awn"></i> Interior (Sineu, Sa Pobla, Inca)</div>
+
+                    <div class="restaurant-card" data-zone="interior" data-id="20" onclick="flyToRestaurant(20)">
+                        <div class="card-top"><div class="card-name">Es Molí d'en Pau</div><div class="card-rank">#20</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Sineu</div>
+                        <div class="card-meta"><span class="tag tag-type">Mallorquina tradicional</span><span class="tag tag-price">~22 €</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="interior" data-id="21" onclick="flyToRestaurant(21)">
+                        <div class="card-top"><div class="card-name">ES CÓS Restaurant</div><div class="card-rank">#21</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Sineu</div>
+                        <div class="card-meta"><span class="tag tag-type">Cocina casera</span><span class="tag tag-price">~20 €</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="interior" data-id="22" onclick="flyToRestaurant(22)">
+                        <div class="card-top"><div class="card-name">El Rey de la Tapa</div><div class="card-rank">#22</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Sineu</div>
+                        <div class="card-meta"><span class="tag tag-type">Tapas y paellas</span><span class="tag tag-price">~15 €</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="interior" data-id="23" onclick="flyToRestaurant(23)">
+                        <div class="card-top"><div class="card-name">El Cruce</div><div class="card-rank">#23</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Ctra. Palma-Manacor · Vilafranca</div>
+                        <div class="card-meta"><span class="tag tag-type">Mallorquina auténtica</span><span class="tag tag-price">~15 €</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="interior" data-id="24" onclick="flyToRestaurant(24)">
+                        <div class="card-top"><div class="card-name">Pastisseria Pomar</div><div class="card-rank">#24</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Inca</div>
+                        <div class="card-meta"><span class="tag tag-type">Repostería artesanal</span><span class="tag tag-price">~5 €</span></div>
+                    </div>
+                    <div class="restaurant-card" data-zone="interior" data-id="39" onclick="flyToRestaurant(39)">
+                        <div class="card-top"><div class="card-name">Es 4 Vents</div><div class="card-rank">#39</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Ctra. Palma-Manacor Km 21 &middot; Algaida</div>
+                        <div class="card-meta"><span class="tag tag-type">Cocina payesa auténtica</span><span class="tag tag-price">~20-30 &euro;</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="interior" data-id="40" onclick="flyToRestaurant(40)">
+                        <div class="card-top"><div class="card-name">Cal Dimoni</div><div class="card-rank">#40</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Ctra. Palma-Manacor Km 21 &middot; Algaida</div>
+                        <div class="card-meta"><span class="tag tag-type">Caracoles &middot; Frit mallorquín</span><span class="tag tag-price">~15-22 &euro;</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="interior" data-id="41" onclick="flyToRestaurant(41)">
+                        <div class="card-top"><div class="card-name">S'Hostal d'Algaida</div><div class="card-rank">#41</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Pla&ccedil;a del Rei Joan Carles I &middot; Algaida</div>
+                        <div class="card-meta"><span class="tag tag-type">Cocina mallorquina de temporada</span><span class="tag tag-price">~15-20 &euro;</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="interior" data-id="42" onclick="flyToRestaurant(42)">
+                        <div class="card-top"><div class="card-name">Sa Cuina De N'Aina</div><div class="card-rank">#42</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Carrer Major &middot; Sencelles</div>
+                        <div class="card-meta"><span class="tag tag-type">Mediterránea en casa mallorquina</span><span class="tag tag-price">~18-25 &euro;</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="interior" data-id="43" onclick="flyToRestaurant(43)">
+                        <div class="card-top"><div class="card-name">Restaurant Foc i Caliu</div><div class="card-rank">#43</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Selva (entre Inca y Caimari)</div>
+                        <div class="card-meta"><span class="tag tag-type">Carnes premium al grill</span><span class="tag tag-price">~20-30 &euro;</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="interior" data-id="44" onclick="flyToRestaurant(44)">
+                        <div class="card-top"><div class="card-name">Celler Can Font</div><div class="card-rank">#44</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Carrer de l'Església &middot; Sineu</div>
+                        <div class="card-meta"><span class="tag tag-type">Celler familiar &middot; Sopes y frit</span><span class="tag tag-price">~15-22 &euro;</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="interior" data-id="45" onclick="flyToRestaurant(45)">
+                        <div class="card-top"><div class="card-name">Es Racó d'en Jaume</div><div class="card-rank">#45</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Carrer Llarg &middot; Santa Maria del Camí</div>
+                        <div class="card-meta"><span class="tag tag-type">Arroces &middot; D.O. Binissalem</span><span class="tag tag-price">~20-28 &euro;</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="interior" data-id="46" onclick="flyToRestaurant(46)">
+                        <div class="card-top"><div class="card-name">Es Celler de Petra</div><div class="card-rank">#46</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Carrer de l'Hospital, 46 &middot; Petra</div>
+                        <div class="card-meta"><span class="tag tag-type">Arròs brut &middot; Cordero al horno</span><span class="tag tag-price">~18-25 &euro;</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="interior" data-id="47" onclick="flyToRestaurant(47)">
+                        <div class="card-top"><div class="card-name">Celler Ca'n Ripoll</div><div class="card-rank">#47</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Carrer de la Pau, 8 &middot; Inca</div>
+                        <div class="card-meta"><span class="tag tag-type">Celler centenario &middot; Vinos mallorquines</span><span class="tag tag-price">~20-30 &euro;</span></div>
+                    </div>                </div>
+
+                <!-- SUR -->
+                <div class="zone-group" data-zone="sur">
+                    <div class="zone-title"><i class="fas fa-umbrella-beach"></i> Sur y Sureste</div>
+
+                    <div class="restaurant-card" data-zone="sur" data-id="25" onclick="flyToRestaurant(25)">
+                        <div class="card-top"><div class="card-name">Es Pinaret</div><div class="card-rank">#25</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Ses Salines</div>
+                        <div class="card-meta"><span class="tag tag-type">Arroces a la leña</span><span class="tag tag-price">~20 €</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="sur" data-id="26" onclick="flyToRestaurant(26)">
+                        <div class="card-top"><div class="card-name">Chiringuito Cala Sa Nau</div><div class="card-rank">#26</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Cala Sa Nau · Felanitx</div>
+                        <div class="card-meta"><span class="tag tag-type">Mediterránea</span><span class="tag tag-price">~25 €</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="sur" data-id="27" onclick="flyToRestaurant(27)">
+                        <div class="card-top"><div class="card-name">S'Arrosseria</div><div class="card-rank">#27</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Puerto de Colònia Sant Jordi</div>
+                        <div class="card-meta"><span class="tag tag-type">Arroces y mariscos</span><span class="tag tag-price">~25 €</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="sur" data-id="28" onclick="flyToRestaurant(28)">
+                        <div class="card-top"><div class="card-name">Es Caragol</div><div class="card-rank">#28</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Cala Santanyí</div>
+                        <div class="card-meta"><span class="tag tag-type">Pescado fresco</span><span class="tag tag-price">~25 €</span></div>
+                    </div>
+                    <div class="restaurant-card" data-zone="sur" data-id="37" onclick="flyToRestaurant(37)">
+                        <div class="card-top"><div class="card-name">Restaurant S'Amarador</div><div class="card-rank">#37</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Parque Natural de Mondragó &middot; Cala s'Amarador, Santanyí</div>
+                        <div class="card-meta"><span class="tag tag-type">Pescado mallorquín</span><span class="tag tag-price">~25-35 &euro;</span><span class="tag tag-season">⏳ Temporada</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="sur" data-id="38" onclick="flyToRestaurant(38)">
+                        <div class="card-top"><div class="card-name">Es Molí de Sal</div><div class="card-rank">#38</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Ctra. Campos a Colònia de Sant Jordi, Km 8.3</div>
+                        <div class="card-meta"><span class="tag tag-type">Arroces y pescados a la brasa</span><span class="tag tag-price">~25-40 &euro;</span></div>
+                    </div>                </div>
+
+                <!-- OTROS -->
+                <div class="zone-group" data-zone="otros">
+                    <div class="zone-title"><i class="fas fa-map-pin"></i> Otros puntos de la isla</div>
+
+                    <div class="restaurant-card" data-zone="otros" data-id="29" onclick="flyToRestaurant(29)">
+                        <div class="card-top"><div class="card-name">S'Oratge Mar</div><div class="card-rank">#29</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Sa Ràpita</div>
+                        <div class="card-meta"><span class="tag tag-type">Mediterránea</span><span class="tag tag-price">Menú ~15 €</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="otros" data-id="30" onclick="flyToRestaurant(30)">
+                        <div class="card-top"><div class="card-name">Cabra Blanca</div><div class="card-rank">#30</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Santa Maria del Camí</div>
+                        <div class="card-meta"><span class="tag tag-type">Mediterránea moderna</span><span class="tag tag-price">~30 €</span></div>
+                    </div>
+                </div>
+
+                <!-- CON VISTAS — Top 10 vistas espectaculares -->
+                <div class="zone-group" data-zone="vistas">
+                    <div class="zone-title"><i class="fas fa-eye"></i> Con Vistas Espectaculares</div>
+
+                    <div class="restaurant-card" data-zone="vistas" data-id="36" onclick="flyToRestaurant(36)">
+                        <div class="card-top"><div class="card-name">Bens d'Avall</div><div class="card-rank">#36</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Ctra. Sóller-Deià km 56 · Costa Deià</div>
+                        <div class="card-meta"><span class="tag tag-type">Acantilado Tramuntana ★★★★★</span><span class="tag tag-price">~60-80 €</span><span class="tag tag-season">⏳ Temporada</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="vistas" data-id="31" onclick="flyToRestaurant(31)">
+                        <div class="card-top"><div class="card-name">Ca's Patró March</div><div class="card-rank">#31</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Camino de la Cala Bajo · Cala Deià</div>
+                        <div class="card-meta"><span class="tag tag-type">Cala virgen sobre el mar ★★★★★</span><span class="tag tag-price">~45-60 €</span><span class="tag tag-season">⏳ Temporada</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="vistas" data-id="48" onclick="flyToRestaurant(48)">
+                        <div class="card-top"><div class="card-name">La Fortaleza (Cap Rocat)</div><div class="card-rank">#48</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Ctra. d'Enderrocat s/n · Llucmajor</div>
+                        <div class="card-meta"><span class="tag tag-type">Fortaleza sobre acantilado ★★★★★</span><span class="tag tag-price">~80-120 €</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="vistas" data-id="49" onclick="flyToRestaurant(49)">
+                        <div class="card-top"><div class="card-name">Can Simoneta Gastrònomic</div><div class="card-rank">#49</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Ctra. Artà-Canyamel, Km 8 · Capdepera</div>
+                        <div class="card-meta"><span class="tag tag-type">Acantilado costa noreste ★★★★★</span><span class="tag tag-price">~55-80 €</span><span class="tag tag-season">⏳ Temporada</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="vistas" data-id="50" onclick="flyToRestaurant(50)">
+                        <div class="card-top"><div class="card-name">L'Àtic (Hotel Saratoga)</div><div class="card-rank">#50</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Passeig de Mallorca, 6 · Palma</div>
+                        <div class="card-meta"><span class="tag tag-type">Skyline Palma + Catedral + Bahía ★★★★★</span><span class="tag tag-price">~40-55 €</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="vistas" data-id="51" onclick="flyToRestaurant(51)">
+                        <div class="card-top"><div class="card-name">Es Princep Rooftop</div><div class="card-rank">#51</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Carrer de la Bala Roja, 1 · Palma</div>
+                        <div class="card-meta"><span class="tag tag-type">Catedral + Bahía de Palma ★★★★★</span><span class="tag tag-price">~50-70 €</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="vistas" data-id="52" onclick="flyToRestaurant(52)">
+                        <div class="card-top"><div class="card-name">Port Petit</div><div class="card-rank">#52</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Avinguda de Cala Llonga · Cala d'Or, Santanyí</div>
+                        <div class="card-meta"><span class="tag tag-type">Puerto íntimo de Cala d'Or ★★★★</span><span class="tag tag-price">~55-80 €</span><span class="tag tag-season">⏳ Temporada</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="vistas" data-id="53" onclick="flyToRestaurant(53)">
+                        <div class="card-top"><div class="card-name">Puig de Santa Magdalena</div><div class="card-rank">#53</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Santuari de Santa Magdalena · Inca (304m)</div>
+                        <div class="card-meta"><span class="tag tag-type">Panorámica 360° toda la isla ★★★★★</span><span class="tag tag-price">~20-30 €</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="vistas" data-id="54" onclick="flyToRestaurant(54)">
+                        <div class="card-top"><div class="card-name">Gran Folies Beach Club</div><div class="card-rank">#54</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Cala Llamp · Port d'Andratx</div>
+                        <div class="card-meta"><span class="tag tag-type">Cala turquesa suroeste ★★★★★</span><span class="tag tag-price">~35-55 €</span><span class="tag tag-season">⏳ Temporada</span></div>
+                    </div>
+
+                    <div class="restaurant-card" data-zone="vistas" data-id="55" onclick="flyToRestaurant(55)">
+                        <div class="card-top"><div class="card-name">Seaside — Hotel Portitxol</div><div class="card-rank">#55</div></div>
+                        <div class="card-address"><i class="fas fa-map-marker-alt"></i> Carrer Sirena, 27 · El Portitxol, Palma</div>
+                        <div class="card-meta"><span class="tag tag-type">Puerto marinero Portitxol ★★★★</span><span class="tag tag-price">~25-40 €</span></div>
+                    </div>
+                </div>
+
+            </div><!-- /list-column -->
+        </div><!-- /page-layout -->
+    </div><!-- /container -->
+</main>
+
+<!-- Botón flotante de navegación -->
+<div class="floating-nav" id="floatingNav">
+    <div class="floating-nav-menu" id="floatingNavMenu">
+        <a href="index.html" class="fab-link-primary">
+            <i class="fas fa-map"></i> Guía 4 Días
+        </a>
+        <a href="tiempo.html">
+            <i class="fas fa-cloud-sun"></i> Ver Tiempo
+        </a>
+    </div>
+    <button class="floating-nav-toggle" id="floatingNavToggle" aria-label="Navegación">
+        <i class="fas fa-compass"></i>
+    </button>
+</div>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2026 <a href="https://jaumequelo.com" target="_blank" rel="noopener noreferrer">Jaume Quelo</a> &mdash; Guía de Viaje Mallorca &nbsp;|&nbsp;
+        <a href="index.html"><i class="fas fa-map"></i> Ver Guía de 4 Días</a> &nbsp;|&nbsp;
+        <a href="https://github.com/jaumequelo/guia-mallorca" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i> GitHub</a></p>
+    </div>
+</footer>
+
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+<script>
+    window.MAPBOX_TOKEN = window.MAPBOX_TOKEN || '';
+</script>
+<script src="config.js" onerror="void 0"></script>
+<script>
+// ============================================================
+// DATOS DE RESTAURANTES
+// ============================================================
+const restaurants = [
+    { id: 1,  name: "Ca'n Joan de S'Aigo",         lat: 39.5697, lng: 2.6503, zone: 'palma',      type: "Tradicional mallorquín", price: "~8 €" },
+    { id: 2,  name: "Es Baluard Restaurant",        lat: 39.5730, lng: 2.6440, zone: 'palma',      type: "Cocina mallorquina",     price: "Menú ~13 €" },
+    { id: 3,  name: "Sa Roqueta",                   lat: 39.5685, lng: 2.6555, zone: 'palma',      type: "Pescado, marisco y arroces", price: "~25-35 €" },
+    { id: 4,  name: "Restaurant Sa Llotja",         lat: 39.5683, lng: 2.6557, zone: 'palma',      type: "Arroces y mariscos",     price: "~18 €" },
+    { id: 5,  name: "Can Lluc",                     lat: 39.5745, lng: 2.6380, zone: 'palma',      type: "Cocina mallorquina",     price: "Menú ~10 €" },
+    { id: 6,  name: "Bar España",                   lat: 39.5700, lng: 2.6510, zone: 'palma',      type: "Pa amb oli y tapas",     price: "~8 €" },
+    { id: 7,  name: "Sa Trobada",                   lat: 39.5710, lng: 2.6500, zone: 'palma',      type: "Mediterránea",           price: "~14 €" },
+    { id: 8,  name: "Casa Julio",                   lat: 39.5720, lng: 2.6490, zone: 'palma',      type: "Española",               price: "~15 €" },
+    { id: 9,  name: "NUS",                          lat: 39.5740, lng: 2.6370, zone: 'palma',      type: "Asiática-mediterránea",  price: "~25 €" },
+    { id: 10, name: "Mouna",                        lat: 39.5742, lng: 2.6365, zone: 'palma',      type: "Vegano / Orgánico",      price: "~20 €" },
+    { id: 11, name: "Forn des Teatre",              lat: 39.5725, lng: 2.6495, zone: 'palma',      type: "Panadería / Cafetería",  price: "~5 €" },
+    { id: 12, name: "Can Matevet",                  lat: 39.8536, lng: 3.1250, zone: 'norte',      type: "Marisco / Tapas",        price: "~25 €" },
+    { id: 13, name: "Bar des Peix",                 lat: 39.9030, lng: 3.0850, zone: 'norte',      type: "Mariscos frescos de puerto", price: "~20-30 €" },
+    { id: 14, name: "AmázO",                        lat: 39.9020, lng: 3.0870, zone: 'norte',      type: "Sudamericana-mediterránea", price: "~30 €" },
+    { id: 15, name: "Ca'n Toni",                    lat: 39.7638, lng: 2.7156, zone: 'tramuntana', type: "Cocina casera mallorquina", price: "~15 €" },
+    { id: 16, name: "Restaurant Ca'n Boqueta",      lat: 39.7640, lng: 2.7150, zone: 'tramuntana', type: "Mediterránea",           price: "~25 €" },
+    { id: 17, name: "Do de Pit",                    lat: 39.7640, lng: 2.7145, zone: 'tramuntana', type: "Mallorquina moderna",    price: "~22 €" },
+    { id: 18, name: "Restaurant Miramar",           lat: 39.7120, lng: 2.6250, zone: 'tramuntana', type: "Pescado y arroces",      price: "Menú ~18 €" },
+    { id: 19, name: "Sebastian",                    lat: 39.7488, lng: 2.6470, zone: 'tramuntana', type: "Mediterránea-asiática",  price: "~35 €" },
+    { id: 20, name: "Es Molí d'en Pau",             lat: 39.6460, lng: 3.0160, zone: 'interior',   type: "Mallorquina tradicional",price: "~22 €" },
+    { id: 21, name: "ES CÓS Restaurant",            lat: 39.6455, lng: 3.0158, zone: 'interior',   type: "Cocina casera",          price: "~20 €" },
+    { id: 22, name: "El Rey de la Tapa",            lat: 39.6458, lng: 3.0162, zone: 'interior',   type: "Tapas y paellas",        price: "~15 €" },
+    { id: 23, name: "El Cruce",                     lat: 39.5750, lng: 3.0890, zone: 'interior',   type: "Mallorquina auténtica",  price: "~15 €" },
+    { id: 24, name: "Pastisseria Pomar",            lat: 39.7196, lng: 2.9133, zone: 'interior',   type: "Repostería artesanal",   price: "~5 €" },
+    { id: 25, name: "Es Pinaret",                   lat: 39.3360, lng: 3.0480, zone: 'sur',        type: "Arroces a la leña",      price: "~20 €" },
+    { id: 26, name: "Chiringuito Cala Sa Nau",      lat: 39.4500, lng: 3.2320, zone: 'sur',        type: "Mediterránea",           price: "~25 €" },
+    { id: 27, name: "S'Arrosseria",                 lat: 39.3318, lng: 3.0081, zone: 'sur',        type: "Arroces y mariscos",     price: "~25 €" },
+    { id: 28, name: "Es Caragol",                   lat: 39.3356, lng: 3.1356, zone: 'sur',        type: "Pescado fresco",         price: "~25 €" },
+    { id: 29, name: "S'Oratge Mar",                 lat: 39.3670, lng: 2.9820, zone: 'otros',      type: "Mediterránea",           price: "Menú ~15 €" },
+    { id: 30, name: "Cabra Blanca",                 lat: 39.6390, lng: 2.7850, zone: 'otros',      type: "Mediterránea moderna",   price: "~30 €" },
+    { id: 31, name: "Ca's Patró March",             lat: 39.7488, lng: 2.6474, zone: 'tramuntana', type: "Pescado y marisco de roca", price: "~45-60 €" },
+    { id: 32, name: "Ca n'Eduardo",                 lat: 39.5680, lng: 2.6580, zone: 'palma',      type: "Caldereta de langosta",  price: "~35-50 €" },
+    { id: 33, name: "La Parada del Mar",             lat: 39.5690, lng: 2.6420, zone: 'palma',      type: "Pescadería-restaurante", price: "~20-30 €" },
+    { id: 34, name: "Casa Fernando",                lat: 39.5590, lng: 2.7000, zone: 'palma',      type: "Pescado a la plancha",   price: "~20-30 €" },
+    { id: 35, name: "Ses Oliveres",                  lat: 39.7956, lng: 2.6963, zone: 'tramuntana', type: "Gamba roja de Sóller",   price: "~25-35 €" },
+    { id: 36, name: "Bens d'Avall",                  lat: 39.7640, lng: 2.6730, zone: 'tramuntana', type: "Cocina balear · Michelin", price: "~50-70 €" },
+    { id: 37, name: "Restaurant S'Amarador",         lat: 39.3500, lng: 3.1870, zone: 'sur',        type: "Pescado mallorquín",     price: "~25-35 €" },
+    { id: 38, name: "Es Molí de Sal",               lat: 39.3350, lng: 3.0020, zone: 'sur',        type: "Arroces y pescados a la brasa", price: "~25-40 €" },
+    { id: 39, name: "Es 4 Vents",                    lat: 39.5650, lng: 2.8950, zone: 'interior',   type: "Cocina payesa auténtica",      price: "~20-30 €" },
+    { id: 40, name: "Cal Dimoni",                    lat: 39.5645, lng: 2.8955, zone: 'interior',   type: "Caracoles · Frit mallorquín",  price: "~15-22 €" },
+    { id: 41, name: "S'Hostal d'Algaida",            lat: 39.5650, lng: 2.8935, zone: 'interior',   type: "Cocina mallorquina temporada",  price: "~15-20 €" },
+    { id: 42, name: "Sa Cuina De N'Aina",            lat: 39.6520, lng: 2.8960, zone: 'interior',   type: "Mediterránea casa mallorquina", price: "~18-25 €" },
+    { id: 43, name: "Restaurant Foc i Caliu",        lat: 39.7440, lng: 2.9200, zone: 'interior',   type: "Carnes premium al grill",       price: "~20-30 €" },
+    { id: 44, name: "Celler Can Font",               lat: 39.6455, lng: 3.0160, zone: 'interior',   type: "Celler familiar · Sopes y frit", price: "~15-22 €" },
+    { id: 45, name: "Es Racó d'en Jaume",            lat: 39.6390, lng: 2.7830, zone: 'interior',   type: "Arroces · D.O. Binissalem",    price: "~20-28 €" },
+    { id: 46, name: "Es Celler de Petra",            lat: 39.6070, lng: 3.1020, zone: 'interior',   type: "Arròs brut · Cordero al horno", price: "~18-25 €" },
+    { id: 47, name: "Celler Ca'n Ripoll",            lat: 39.7200, lng: 2.9130, zone: 'interior',   type: "Celler centenario mallorquín",   price: "~20-30 €" },
+    { id: 48, name: "La Fortaleza (Cap Rocat)",       lat: 39.4800, lng: 2.7150, zone: 'vistas',     type: "Fortaleza s.XIX sobre acantilado \u2605\u2605\u2605\u2605\u2605", price: "~80-120 €" },
+    { id: 49, name: "Can Simoneta Gastr\u00f2nomic",      lat: 39.7120, lng: 3.4350, zone: 'vistas',     type: "Acantilado costa noreste \u2605\u2605\u2605\u2605\u2605",   price: "~55-80 €" },
+    { id: 50, name: "L'\u00c0tic (Hotel Saratoga)",       lat: 39.5700, lng: 2.6490, zone: 'vistas',     type: "Skyline Palma + Catedral \u2605\u2605\u2605\u2605\u2605",   price: "~40-55 €" },
+    { id: 51, name: "Es Princep Rooftop",             lat: 39.5680, lng: 2.6470, zone: 'vistas',     type: "Catedral + Bah\u00eda de Palma \u2605\u2605\u2605\u2605\u2605",  price: "~50-70 €" },
+    { id: 52, name: "Port Petit",                    lat: 39.3790, lng: 3.2290, zone: 'vistas',     type: "Puerto \u00edntimo Cala d'Or \u2605\u2605\u2605\u2605",      price: "~55-80 €" },
+    { id: 53, name: "Puig de Santa Magdalena",       lat: 39.7410, lng: 2.9210, zone: 'vistas',     type: "Panor\u00e1mica 360\u00b0 toda la isla \u2605\u2605\u2605\u2605\u2605", price: "~20-30 €" },
+    { id: 54, name: "Gran Folies Beach Club",        lat: 39.5370, lng: 2.3680, zone: 'vistas',     type: "Cala turquesa suroeste \u2605\u2605\u2605\u2605\u2605",      price: "~35-55 €" },
+    { id: 55, name: "Seaside \u2014 Hotel Portitxol",     lat: 39.5590, lng: 2.6680, zone: 'vistas',     type: "Puerto marinero Portitxol \u2605\u2605\u2605\u2605",      price: "~25-40 €" }
+];
+
+const zoneColors = {
+    palma:      '#FF8C00',
+    norte:      '#1976D2',
+    tramuntana: '#388e3c',
+    interior:   '#8e24aa',
+    sur:        '#e53935',
+    otros:      '#546e7a',
+    vistas:     '#00acc1'
+};
+
+// ============================================================
+// INIT MAP
+// ============================================================
+let map;
+const markerInstances = {};
+
+function initMap() {
+    if (!window.MAPBOX_TOKEN) {
+        document.getElementById('restaurantMap').innerHTML =
+            '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;font-size:0.9rem;padding:2rem;text-align:center;">' +
+            '<div><i class="fas fa-map" style="font-size:2rem;margin-bottom:0.75rem;display:block;"></i>Mapa no disponible — configura tu token de Mapbox en config.js</div></div>';
+        return;
+    }
+
+    mapboxgl.accessToken = window.MAPBOX_TOKEN;
+
+    map = new mapboxgl.Map({
+        container: 'restaurantMap',
+        style: 'mapbox://styles/mapbox/streets-v12',
+        center: [2.9500, 39.6200],
+        zoom: 8.5
+    });
+
+    map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right');
+
+    map.on('load', () => {
+        restaurants.forEach(r => addMarker(r));
+        if (userLocation) showUserOnMap(userLocation.lat, userLocation.lng);
+    });
+}
+
+function addMarker(r) {
+    const el = document.createElement('div');
+    el.className = `rest-marker zone-${r.zone}`;
+    el.innerHTML = '<i class="fas fa-utensils"></i>';
+    el.title = r.name;
+
+    const popup = new mapboxgl.Popup({ offset: 18, closeButton: false, maxWidth: '240px' })
+        .setHTML(`
+            <div class="popup-name">#${r.id} ${r.name}</div>
+            <div class="popup-meta">${r.type}</div>
+            <span class="popup-price"><i class="fas fa-euro-sign"></i> ${r.price}</span>
+            <a class="popup-gmaps" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.name + ' Mallorca')}" target="_blank" rel="noopener noreferrer"><i class="fas fa-circle-info"></i> Ver en Google Maps</a>
+        `);
+
+    const marker = new mapboxgl.Marker({ element: el })
+        .setLngLat([r.lng, r.lat])
+        .setPopup(popup)
+        .addTo(map);
+
+    // Highlight card on marker click
+    el.addEventListener('click', () => {
+        highlightCard(r.id);
+    });
+
+    markerInstances[r.id] = marker;
+}
+
+function flyToRestaurant(id) {
+    const r = restaurants.find(x => x.id === id);
+    if (!r || !map) return;
+    map.flyTo({ center: [r.lng, r.lat], zoom: 14, duration: 900 });
+    const marker = markerInstances[id];
+    if (marker) marker.togglePopup();
+    highlightCard(id);
+}
+
+function highlightCard(id) {
+    document.querySelectorAll('.restaurant-card').forEach(c => c.classList.remove('highlighted'));
+    const card = document.querySelector(`.restaurant-card[data-id="${id}"]`);
+    if (card) {
+        card.classList.add('highlighted');
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+}
+
+// ============================================================
+// GEOLOCALIZACIÓN — Marca usuario en mapa + distancias en tarjetas
+// ============================================================
+let userLocation = null;
+let userGeoMarker = null;
+
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+    return (R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))).toFixed(1);
+}
+
+function updateDistancesInCards() {
+    if (!userLocation) return;
+    document.querySelectorAll('.restaurant-card').forEach(card => {
+        const id = parseInt(card.dataset.id);
+        const r = restaurants.find(x => x.id === id);
+        if (!r) return;
+        const dist = calculateDistance(userLocation.lat, userLocation.lng, r.lat, r.lng);
+        let badge = card.querySelector('.rest-distance-badge');
+        if (!badge) {
+            badge = document.createElement('div');
+            badge.className = 'rest-distance-badge';
+            const meta = card.querySelector('.card-meta');
+            if (meta) meta.insertAdjacentElement('afterend', badge);
+        }
+        badge.innerHTML = `<i class="fas fa-location-arrow"></i><span class="dist-km">${dist} km</span><span class="dist-label">desde tu ubicación</span>`;
+    });
+}
+
+function showUserOnMap(lat, lng) {
+    if (!map) return;
+    if (userGeoMarker) {
+        userGeoMarker.setLngLat([lng, lat]);
+        return;
+    }
+    const el = document.createElement('div');
+    el.className = 'user-location-marker';
+    el.innerHTML = '<div class="user-location-pulse"></div>';
+    userGeoMarker = new mapboxgl.Marker({ element: el })
+        .setLngLat([lng, lat])
+        .setPopup(new mapboxgl.Popup({ closeButton: false, offset: 14 })
+            .setHTML('<div style="font-size:0.82rem;font-weight:700;color:#0066cc;">&#128205; Tu ubicación</div>'))
+        .addTo(map);
+}
+
+function startRestaurantsGeolocation() {
+    if (!navigator.geolocation) return;
+    const perm = localStorage.getItem('geolocationPermission');
+    if (perm === 'denied') return;
+    const opts = { enableHighAccuracy: true, maximumAge: 30000, timeout: 10000 };
+    const onSuccess = (pos) => {
+        localStorage.setItem('geolocationPermission', 'granted');
+        userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        showUserOnMap(userLocation.lat, userLocation.lng);
+        updateDistancesInCards();
+    };
+    const onError = () => { localStorage.setItem('geolocationPermission', 'denied'); };
+    if (perm === 'granted') {
+        navigator.geolocation.watchPosition(onSuccess, onError, opts);
+    } else {
+        navigator.geolocation.getCurrentPosition(onSuccess, onError, opts);
+    }
+}
+
+// ============================================================
+// FILTER TABS
+// ============================================================
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const zone = btn.dataset.zone;
+
+        document.querySelectorAll('.restaurant-card').forEach(card => {
+            if (zone === 'all' || card.dataset.zone === zone) {
+                card.classList.remove('hidden');
+            } else {
+                card.classList.add('hidden');
+            }
+        });
+
+        // Show/hide zone group titles
+        document.querySelectorAll('.zone-group').forEach(group => {
+            if (zone === 'all' || group.dataset.zone === zone) {
+                group.style.display = '';
+            } else {
+                group.style.display = 'none';
+            }
+        });
+
+        // Fly map to zone center
+        if (map && zone !== 'all') {
+            const zoneRestaurants = restaurants.filter(r => r.zone === zone);
+            if (zoneRestaurants.length) {
+                const avgLng = zoneRestaurants.reduce((s, r) => s + r.lng, 0) / zoneRestaurants.length;
+                const avgLat = zoneRestaurants.reduce((s, r) => s + r.lat, 0) / zoneRestaurants.length;
+                map.flyTo({ center: [avgLng, avgLat], zoom: 11, duration: 800 });
+            }
+        } else if (map && zone === 'all') {
+            map.flyTo({ center: [2.9500, 39.6200], zoom: 8.5, duration: 800 });
+        }
+    });
+});
+
+// ============================================================
+// BOOT
+// ============================================================
+initMap();
+startRestaurantsGeolocation();
+
+// Inject Google Maps "i" button into every restaurant card
+document.querySelectorAll('.restaurant-card').forEach(card => {
+    const id = parseInt(card.dataset.id);
+    const r = restaurants.find(x => x.id === id);
+    if (!r) return;
+    const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.name + ' Mallorca')}`;
+    const btn = document.createElement('a');
+    btn.href = url;
+    btn.target = '_blank';
+    btn.rel = 'noopener noreferrer';
+    btn.className = 'card-info-btn';
+    btn.title = `Ver ${r.name} en Google Maps`;
+    btn.setAttribute('aria-label', `Ver ${r.name} en Google Maps`);
+    btn.innerHTML = '<i class="fas fa-circle-info"></i>';
+    btn.addEventListener('click', e => e.stopPropagation());
+    const cardTop = card.querySelector('.card-top');
+    if (cardTop) cardTop.appendChild(btn);
+});
+
+// Botón flotante toggle
+(function() {
+    const nav = document.getElementById('floatingNav');
+    const toggle = document.getElementById('floatingNavToggle');
+    if (!nav || !toggle) return;
+    toggle.addEventListener('click', e => {
+        e.stopPropagation();
+        nav.classList.toggle('open');
+    });
+    document.addEventListener('click', e => {
+        if (!nav.contains(e.target)) nav.classList.remove('open');
+    });
+})();
+</script>
+</body>
+</html>
