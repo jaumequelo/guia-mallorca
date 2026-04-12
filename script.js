@@ -183,11 +183,10 @@ function saveVisitedStops() {
 // CÁLCULO DE DISTANCIA Y GEOLOCALIZACIÓN
 // =============================================
 function calculateDistance(lat1, lon1, lat2, lon2) {
-    // Fórmula de Haversine para calcular distancia entre dos puntos
-    const R = 6371; // Radio de la Tierra en km
+    const R = 6371;
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = 
+    const a =
         Math.sin(dLat / 2) * Math.sin(dLat / 2) +
         Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
         Math.sin(dLon / 2) * Math.sin(dLon / 2);
@@ -202,19 +201,16 @@ function startLocationTracking() {
         return;
     }
 
-    // Verificar estado del permiso guardado
     const permissionState = localStorage.getItem('geolocationPermission');
-    
-    // Si el usuario rechazó anteriormente, no intentar de nuevo
+
     if (permissionState === 'denied') {
         console.log('Permiso de geolocalización rechazado previamente');
         return;
     }
-    
-    // Si el usuario ya permitió anteriormente, ir directo a watchPosition
+
     if (permissionState === 'granted') {
         console.log('Usando permiso de geolocalización guardado');
-        // Obtener ubicación inicial
+
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 updateUserLocation(position.coords);
@@ -225,7 +221,6 @@ function startLocationTracking() {
             { enableHighAccuracy: true, maximumAge: 10000 }
         );
 
-        // Seguimiento continuo
         watchId = navigator.geolocation.watchPosition(
             (position) => {
                 updateUserLocation(position.coords);
@@ -238,14 +233,11 @@ function startLocationTracking() {
         return;
     }
 
-    // Primera vez: pedir permiso y guardar resultado
     navigator.geolocation.getCurrentPosition(
         (position) => {
-            // Permiso otorgado
             localStorage.setItem('geolocationPermission', 'granted');
             updateUserLocation(position.coords);
-            
-            // Iniciar seguimiento continuo
+
             watchId = navigator.geolocation.watchPosition(
                 (position) => {
                     updateUserLocation(position.coords);
@@ -257,7 +249,6 @@ function startLocationTracking() {
             );
         },
         (error) => {
-            // Permiso rechazado o error
             if (error.code === error.PERMISSION_DENIED) {
                 localStorage.setItem('geolocationPermission', 'denied');
                 console.log('Permiso de geolocalización rechazado por el usuario');
@@ -287,8 +278,7 @@ function updateUserLocation(coords) {
     } else {
         userMarker.setLngLat([userLocation.lng, userLocation.lat]);
     }
-    
-    // Actualizar distancias en el itinerario
+
     updateDistancesInItinerary();
 }
 
@@ -306,14 +296,11 @@ function updateDistancesInItinerary() {
     if (!day || !day.stops) return;
 
     day.stops.forEach((stop, stopIndex) => {
-        // Buscar el elemento del stop en el itinerario
         const stopElement = document.querySelector(`[data-stop-id="${currentDayIndex + 1}-${stopIndex}"]`);
         if (!stopElement) return;
 
-        // Calcular distancia
         const distance = calculateDistance(userLocation.lat, userLocation.lng, stop.lat, stop.lng);
 
-        // Buscar o crear el contenedor de distancia dentro de stop-info
         const stopInfo = stopElement.querySelector('.stop-info');
         if (!stopInfo) return;
 
@@ -321,7 +308,6 @@ function updateDistancesInItinerary() {
         if (!distanceContainer) {
             distanceContainer = document.createElement('div');
             distanceContainer.className = 'stop-distance-badge';
-            // Insertar justo después del h3
             const h3 = stopInfo.querySelector('h3');
             if (h3 && h3.nextSibling) {
                 stopInfo.insertBefore(distanceContainer, h3.nextSibling);
@@ -332,7 +318,6 @@ function updateDistancesInItinerary() {
             }
         }
 
-        // Actualizar el contenido
         distanceContainer.innerHTML = `<i class="fas fa-location-arrow"></i><span class="distance-km">${distance} km</span><span class="distance-label">desde tu ubicación</span>`;
     });
 }
@@ -433,7 +418,6 @@ function initMap() {
         loadVisitedStops();
         updateCheckboxUI();
         displayDay(0);
-        // Restaurar capas activas según preferencias guardadas
         if (localStorage.getItem('mallorca_show_parkings') === 'true') {
             const zone = routeData[0]?.zone;
             if (zone) addParkingsToMap(zone);
@@ -441,7 +425,6 @@ function initMap() {
         if (localStorage.getItem('mallorca_show_restaurants') === 'true') {
             addRestaurantsToMap();
         }
-        // Iniciar seguimiento de ubicación del usuario
         startLocationTracking();
     });
 }
@@ -456,7 +439,6 @@ async function displayDay(dayIndex) {
     activeMarkers.forEach(m => m.remove());
     activeMarkers = [];
 
-    // Parkings: respetar estado guardado
     const showParkingsCheckbox = document.getElementById('showParkingsCheckbox');
     const showParkingsCheckboxNav = document.getElementById('showParkingsCheckboxNav');
     const parkingsOn = localStorage.getItem('mallorca_show_parkings') === 'true';
@@ -464,7 +446,6 @@ async function displayDay(dayIndex) {
     if (showParkingsCheckboxNav) showParkingsCheckboxNav.checked = parkingsOn;
     removeParkingsFromMap();
 
-    // Restaurantes: respetar estado guardado
     const showRestaurantsCheckbox = document.getElementById('showRestaurantsCheckbox');
     const showRestaurantsCheckboxNav = document.getElementById('showRestaurantsCheckboxNav');
     const restaurantsOn = localStorage.getItem('mallorca_show_restaurants') === 'true';
@@ -477,11 +458,11 @@ async function displayDay(dayIndex) {
     if (map.getSource('route-source')) map.removeSource('route-source');
 
     const day = routeData[dayIndex];
-    const routingCoords = []; // solo paradas reales, sin restaurantes
+    const routingCoords = [];
     const bounds = new mapboxgl.LngLatBounds();
-    // --- Mostrar parkings relevantes para este día ---
+
     showParkingInfo(day.zone);
-    // --- Marcador de inicio (Calvià) ---
+
     const start = day.startCoord;
     routingCoords.push([start.lng, start.lat]);
     bounds.extend([start.lng, start.lat]);
@@ -499,12 +480,10 @@ async function displayDay(dayIndex) {
         .addTo(map);
     activeMarkers.push(startMarker);
 
-    // --- Marcadores para cada parada ---
     let stopCount = 0;
     day.stops.forEach((stop, index) => {
-        // No crear marcadores de restaurantes aquí — se controlan con el checkbox
         if (stop.type === 'restaurant') return;
-        
+
         bounds.extend([stop.lng, stop.lat]);
         const el = document.createElement('div');
         const key = `${dayIndex}-${index}`;
@@ -539,7 +518,6 @@ async function displayDay(dayIndex) {
 
     map.fitBounds(bounds, { padding: { top: 60, bottom: 60, left: 40, right: 40 }, maxZoom: 13, duration: 800 });
 
-    // --- Dibujar ruta — solo paradas reales, sin restaurantes ---
     const routeCoords = await getRoutingPath(routingCoords);
     if (routeCoords && routeCoords.length > 1) {
         map.addSource('route-source', {
@@ -567,620 +545,15 @@ async function displayDay(dayIndex) {
             paint: { 'line-color': '#1db954', 'line-width': 5, 'line-opacity': 1 }
         });
     }
-    
-    // Actualizar distancias en el itinerario si el usuario tiene ubicación
+
     updateDistancesInItinerary();
-    
-    // Si el checkbox de restaurantes está activo, mostrar restaurantes del día
-    if (showRestaurantsCheckbox && showRestaurantsCheckbox.checked) {
-        addRestaurantsToMap();
-    }
+
+    const showRestaurantsCheckboxNav = document.getElementById('showRestaurantsCheckboxNav');
+    const shouldShowRestaurants = showRestaurantsCheckboxNav && showRestaurantsCheckboxNav.checked;
+    if (shouldShowRestaurants) addRestaurantsToMap();
 }
 
-// =============================================
-// MOSTRAR INFORMACIÓN DE PARKINGS POR ZONA
-// =============================================
-function showParkingInfo(zone) {
-    const parkingInfo = document.getElementById('parkingInfo');
-    const parkingTitle = document.getElementById('parkingTitle');
-    const parkingTip = document.getElementById('parkingTip');
-    const parkingGrid = document.getElementById('parkingGrid');
-
-    if (!zone || !parkingsData[zone]) {
-        parkingInfo.style.display = 'none';
-        return;
-    }
-
-    const data = parkingsData[zone];
-    parkingTitle.textContent = zone;
-    parkingTip.textContent = data.tip;
-
-    parkingGrid.innerHTML = data.parkings.map(p => `
-        <div class="parking-item">
-            <h4>${p.name}</h4>
-            <p><strong>Tipo:</strong> ${p.tipo}</p>
-            <p><strong>Coste:</strong> ${p.coste}</p>
-            <p class="parking-coords"><small>📍 ${p.coords}</small></p>
-        </div>
-    `).join('');
-
-    parkingInfo.style.display = 'block';
-}
-
-// =============================================
-// MARCADORES DE PARKING EN EL MAPA
-// =============================================
-let parkingMarkers = [];
-
-function addParkingsToMap(zone) {
-    // Limpiar marcadores anteriores
-    parkingMarkers.forEach(m => m.remove());
-    parkingMarkers = [];
-
-    if (!zone || !parkingsData[zone]) return;
-
-    const data = parkingsData[zone];
-    data.parkings.forEach(parking => {
-        const coords = parking.coords.split(',').map(c => parseFloat(c.trim()));
-        const lat = coords[0];
-        const lng = coords[1];
-
-        const el = document.createElement('div');
-        el.className = 'parking-marker';
-        el.innerHTML = '<div class="parking-letter">P</div>';
-        el.title = parking.name;
-
-        let popupHTML = `<div class="popup-content"><h4>${parking.name}</h4><p>${parking.tipo}</p><p>${parking.coste}</p>`;
-        if (userLocation) {
-            const distance = calculateDistance(userLocation.lat, userLocation.lng, lat, lng);
-            popupHTML += `<p class="popup-distance"><span style="color: #FF6B6B; font-weight: 600;">📍 ${distance} km</span></p>`;
-        }
-        popupHTML += '</div>';
-        const popup = new mapboxgl.Popup({ offset: 25, closeButton: false })
-            .setHTML(popupHTML);
-
-        const marker = new mapboxgl.Marker({ element: el, anchor: 'bottom' })
-            .setLngLat([lng, lat])
-            .setPopup(popup)
-            .addTo(map);
-
-        parkingMarkers.push(marker);
-    });
-}
-
-function removeParkingsFromMap() {
-    parkingMarkers.forEach(m => m.remove());
-    parkingMarkers = [];
-}
-
-// =============================================
-// BASE DE DATOS COMPLETA DE RESTAURANTES
-// =============================================
-const ALL_RESTAURANTS = [
-    { id: 1,  name: "Ca'n Joan de S'Aigo",         lat: 39.5697, lng: 2.6503, zone: 'palma',      type: "Tradicional mallorquín",              price: "~8 €" },
-    { id: 2,  name: "Es Baluard Restaurant",        lat: 39.5730, lng: 2.6440, zone: 'palma',      type: "Cocina mallorquina",                  price: "Menú ~13 €" },
-    { id: 3,  name: "Sa Roqueta",                   lat: 39.5685, lng: 2.6555, zone: 'palma',      type: "Pescado, marisco y arroces",          price: "~25-35 €" },
-    { id: 4,  name: "Restaurant Sa Llotja",         lat: 39.5683, lng: 2.6557, zone: 'palma',      type: "Arroces y mariscos",                  price: "~18 €" },
-    { id: 5,  name: "Can Lluc",                     lat: 39.5745, lng: 2.6380, zone: 'palma',      type: "Cocina mallorquina",                  price: "Menú ~10 €" },
-    { id: 6,  name: "Bar España",                   lat: 39.5700, lng: 2.6510, zone: 'palma',      type: "Pa amb oli y tapas",                  price: "~8 €" },
-    { id: 7,  name: "Sa Trobada",                   lat: 39.5710, lng: 2.6500, zone: 'palma',      type: "Mediterránea",                        price: "~14 €" },
-    { id: 8,  name: "Casa Julio",                   lat: 39.5720, lng: 2.6490, zone: 'palma',      type: "Española",                            price: "~15 €" },
-    { id: 9,  name: "NUS",                          lat: 39.5740, lng: 2.6370, zone: 'palma',      type: "Asiática-mediterránea",               price: "~25 €" },
-    { id: 10, name: "Mouna",                        lat: 39.5742, lng: 2.6365, zone: 'palma',      type: "Vegano / Orgánico",                   price: "~20 €" },
-    { id: 11, name: "Forn des Teatre",              lat: 39.5725, lng: 2.6495, zone: 'palma',      type: "Panadería / Cafetería",               price: "~5 €" },
-    { id: 12, name: "Can Matevet",                  lat: 39.8536, lng: 3.1250, zone: 'norte',      type: "Marisco / Tapas",                     price: "~25 €" },
-    { id: 13, name: "Bar des Peix",                 lat: 39.9030, lng: 3.0850, zone: 'norte',      type: "Mariscos frescos de puerto",          price: "~20-30 €" },
-    { id: 14, name: "AmázO",                        lat: 39.9020, lng: 3.0870, zone: 'norte',      type: "Sudamericana-mediterránea",           price: "~30 €" },
-    { id: 15, name: "Ca'n Toni",                    lat: 39.7638, lng: 2.7156, zone: 'tramuntana', type: "Cocina casera mallorquina",           price: "~15 €" },
-    { id: 16, name: "Restaurant Ca'n Boqueta",      lat: 39.7640, lng: 2.7150, zone: 'tramuntana', type: "Mediterránea",                        price: "~25 €" },
-    { id: 17, name: "Do de Pit",                    lat: 39.7640, lng: 2.7145, zone: 'tramuntana', type: "Mallorquina moderna",                 price: "~22 €" },
-    { id: 18, name: "Restaurant Miramar",           lat: 39.7120, lng: 2.6250, zone: 'tramuntana', type: "Pescado y arroces",                   price: "Menú ~18 €" },
-    { id: 19, name: "Sebastian",                    lat: 39.7488, lng: 2.6470, zone: 'tramuntana', type: "Mediterránea-asiática",               price: "~35 €" },
-    { id: 20, name: "Es Molí d'en Pau",             lat: 39.6460, lng: 3.0160, zone: 'interior',   type: "Mallorquina tradicional",             price: "~22 €" },
-    { id: 21, name: "ES CÓS Restaurant",            lat: 39.6455, lng: 3.0158, zone: 'interior',   type: "Cocina casera",                       price: "~20 €" },
-    { id: 22, name: "El Rey de la Tapa",            lat: 39.6458, lng: 3.0162, zone: 'interior',   type: "Tapas y paellas",                     price: "~15 €" },
-    { id: 23, name: "El Cruce",                     lat: 39.5750, lng: 3.0890, zone: 'interior',   type: "Mallorquina auténtica",               price: "~15 €" },
-    { id: 24, name: "Pastisseria Pomar",            lat: 39.7196, lng: 2.9133, zone: 'interior',   type: "Repostería artesanal",                price: "~5 €" },
-    { id: 25, name: "Es Pinaret",                   lat: 39.3360, lng: 3.0480, zone: 'sur',        type: "Arroces a la leña",                   price: "~20 €" },
-    { id: 26, name: "Chiringuito Cala Sa Nau",      lat: 39.4500, lng: 3.2320, zone: 'sur',        type: "Mediterránea",                        price: "~25 €" },
-    { id: 27, name: "S'Arrosseria",                 lat: 39.3318, lng: 3.0081, zone: 'sur',        type: "Arroces y mariscos",                  price: "~25 €" },
-    { id: 28, name: "Es Caragol",                   lat: 39.3356, lng: 3.1356, zone: 'sur',        type: "Pescado fresco",                      price: "~25 €" },
-    { id: 29, name: "S'Oratge Mar",                 lat: 39.3670, lng: 2.9820, zone: 'otros',      type: "Mediterránea",                        price: "Menú ~15 €" },
-    { id: 30, name: "Cabra Blanca",                 lat: 39.6390, lng: 2.7850, zone: 'otros',      type: "Mediterránea moderna",                price: "~30 €" },
-    { id: 31, name: "Ca's Patró March",             lat: 39.7488, lng: 2.6474, zone: 'tramuntana', type: "Pescado y marisco de roca",           price: "~45-60 €" },
-    { id: 32, name: "Ca n'Eduardo",                 lat: 39.5680, lng: 2.6580, zone: 'palma',      type: "Caldereta de langosta",               price: "~35-50 €" },
-    { id: 33, name: "La Parada del Mar",            lat: 39.5690, lng: 2.6420, zone: 'palma',      type: "Pescadería-restaurante",              price: "~20-30 €" },
-    { id: 34, name: "Casa Fernando",                lat: 39.5590, lng: 2.7000, zone: 'palma',      type: "Pescado a la plancha",                price: "~20-30 €" },
-    { id: 35, name: "Ses Oliveres",                 lat: 39.7956, lng: 2.6963, zone: 'tramuntana', type: "Gamba roja de Sóller",                price: "~25-35 €" },
-    { id: 36, name: "Bens d'Avall",                 lat: 39.7640, lng: 2.6730, zone: 'tramuntana', type: "Cocina balear · Michelin",            price: "~50-70 €" },
-    { id: 37, name: "Restaurant S'Amarador",        lat: 39.3500, lng: 3.1870, zone: 'sur',        type: "Pescado mallorquín",                  price: "~25-35 €" },
-    { id: 38, name: "Es Molí de Sal",               lat: 39.3350, lng: 3.0020, zone: 'sur',        type: "Arroces y pescados a la brasa",       price: "~25-40 €" },
-    { id: 39, name: "Es 4 Vents",                   lat: 39.5650, lng: 2.8950, zone: 'interior',   type: "Cocina payesa auténtica",             price: "~20-30 €" },
-    { id: 40, name: "Cal Dimoni",                   lat: 39.5645, lng: 2.8955, zone: 'interior',   type: "Caracoles · Frit mallorquín",         price: "~15-22 €" },
-    { id: 41, name: "S'Hostal d'Algaida",           lat: 39.5650, lng: 2.8935, zone: 'interior',   type: "Cocina mallorquina temporada",        price: "~15-20 €" },
-    { id: 42, name: "Sa Cuina De N'Aina",           lat: 39.6520, lng: 2.8960, zone: 'interior',   type: "Mediterránea casa mallorquina",       price: "~18-25 €" },
-    { id: 43, name: "Restaurant Foc i Caliu",       lat: 39.7440, lng: 2.9200, zone: 'interior',   type: "Carnes premium al grill",             price: "~20-30 €" },
-    { id: 44, name: "Celler Can Font",              lat: 39.6455, lng: 3.0160, zone: 'interior',   type: "Celler familiar · Sopes y frit",      price: "~15-22 €" },
-    { id: 45, name: "Es Racó d'en Jaume",           lat: 39.6390, lng: 2.7830, zone: 'interior',   type: "Arroces · D.O. Binissalem",          price: "~20-28 €" },
-    { id: 46, name: "Es Celler de Petra",           lat: 39.6070, lng: 3.1020, zone: 'interior',   type: "Arròs brut · Cordero al horno",      price: "~18-25 €" },
-    { id: 47, name: "Celler Ca'n Ripoll",           lat: 39.7200, lng: 2.9130, zone: 'interior',   type: "Celler centenario mallorquín",        price: "~20-30 €" },
-    { id: 48, name: "La Fortaleza (Cap Rocat)",     lat: 39.4800, lng: 2.7150, zone: 'vistas',     type: "Fortaleza s.XIX · Vista 180°",       price: "~80-120 €" },
-    { id: 49, name: "Can Simoneta Gastrònomic",     lat: 39.7120, lng: 3.4350, zone: 'vistas',     type: "Acantilado costa noreste",            price: "~55-80 €" },
-    { id: 50, name: "L'Àtic (Hotel Saratoga)",      lat: 39.5700, lng: 2.6490, zone: 'vistas',     type: "Azotea · Catedral + Bahía Palma",    price: "~40-55 €" },
-    { id: 51, name: "Es Princep Rooftop",           lat: 39.5680, lng: 2.6470, zone: 'vistas',     type: "Rooftop 5★ · Catedral + Bahía",      price: "~50-70 €" },
-    { id: 52, name: "Port Petit",                   lat: 39.3790, lng: 3.2290, zone: 'vistas',     type: "Puerto íntimo Cala d'Or",            price: "~55-80 €" },
-    { id: 53, name: "Puig de Santa Magdalena",      lat: 39.7410, lng: 2.9210, zone: 'vistas',     type: "Panorámica 360° isla entera",        price: "~20-30 €" },
-    { id: 54, name: "Gran Folies Beach Club",       lat: 39.5370, lng: 2.3680, zone: 'vistas',     type: "Cala turquesa · Port d'Andratx",     price: "~35-55 €" },
-    { id: 55, name: "Seaside (Hotel Portitxol)",    lat: 39.5590, lng: 2.6680, zone: 'vistas',     type: "Puerto marinero Portitxol",          price: "~25-40 €" }
-];
-
-const RESTAURANT_ZONE_COLORS = {
-    palma:      '#FF8C00',
-    norte:      '#1976D2',
-    tramuntana: '#388e3c',
-    interior:   '#8e24aa',
-    sur:        '#e53935',
-    otros:      '#546e7a',
-    vistas:     '#00acc1'
-};
-
-// =============================================
-// MARCADORES DE RESTAURANTES EN EL MAPA
-// =============================================
-let restaurantMarkers = [];
-
-function addRestaurantsToMap() {
-    // Limpiar marcadores anteriores
-    restaurantMarkers.forEach(m => m.remove());
-    restaurantMarkers = [];
-
-    const day = routeData[currentDayIndex];
-    if (!day || !day.stops) return;
-
-    // --- 1) Restaurantes integrados en la ruta (tipo 'restaurant') ---
-    day.stops.forEach(stop => {
-        if (stop.type !== 'restaurant') return;
-
-        const el = document.createElement('div');
-        el.className = 'restaurant-marker';
-        el.innerHTML = '<i class="fas fa-utensils"></i>';
-        el.title = stop.name;
-
-        let popupHTML = `<div class="popup-content"><h4>${stop.name}</h4><p>${stop.description}</p>`;
-        if (userLocation) {
-            const distance = calculateDistance(userLocation.lat, userLocation.lng, stop.lat, stop.lng);
-            popupHTML += `<p class="popup-distance"><span style="color: #FF8C00; font-weight: 600;">📍 ${distance} km</span></p>`;
-        }
-        popupHTML += `<a class="popup-gmaps" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(stop.name + ' Mallorca')}" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> Cómo llegar</a>`;
-        popupHTML += '</div>';
-
-        const popup = new mapboxgl.Popup({ offset: 25, closeButton: false })
-            .setHTML(popupHTML);
-
-        const marker = new mapboxgl.Marker({ element: el, anchor: 'bottom' })
-            .setLngLat([stop.lng, stop.lat])
-            .setPopup(popup)
-            .addTo(map);
-
-        restaurantMarkers.push(marker);
-    });
-
-    // --- 2) Restaurantes cercanos del catálogo completo ---
-    // Se muestran los que están a ≤35 km de cualquier parada de la ruta
-    const routeNames = new Set(
-        day.stops
-            .filter(s => s.type === 'restaurant')
-            .map(s => s.name.toLowerCase().trim())
-    );
-    const MAX_KM = 35;
-
-    ALL_RESTAURANTS.forEach(r => {
-        // Omitir si ya aparece como parada de la ruta
-        if (routeNames.has(r.name.toLowerCase().trim())) return;
-
-        // Distancia mínima a cualquier parada del día
-        const minDist = day.stops.reduce((min, s) => {
-            const d = parseFloat(calculateDistance(s.lat, s.lng, r.lat, r.lng));
-            return d < min ? d : min;
-        }, Infinity);
-        if (minDist > MAX_KM) return;
-
-        const color = RESTAURANT_ZONE_COLORS[r.zone] || '#666';
-        const el = document.createElement('div');
-        el.className = 'restaurant-marker restaurant-marker-nearby';
-        el.style.background = color;
-        el.innerHTML = '<i class="fas fa-utensils"></i>';
-        el.title = r.name;
-
-        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.name + ' Mallorca')}`;
-        let popupHTML = `<div class="popup-content">
-            <h4>${r.name}</h4>
-            <p>${r.type} &mdash; <strong>${r.price}</strong></p>
-            <p style="color:#777;font-size:0.78rem;margin:2px 0 6px;">📍 ${minDist.toFixed(1)} km de la ruta</p>
-            <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                <a class="popup-gmaps" href="${mapsUrl}" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> Maps</a>
-                <a class="popup-gmaps" href="restaurantes-recomendados.html" target="_blank" rel="noopener noreferrer" style="background:#1565c0;"><i class="fas fa-list-ul"></i> Guía</a>
-            </div>
-        </div>`;
-
-        const popup = new mapboxgl.Popup({ offset: 25, closeButton: false })
-            .setHTML(popupHTML);
-
-        const marker = new mapboxgl.Marker({ element: el, anchor: 'bottom' })
-            .setLngLat([r.lng, r.lat])
-            .setPopup(popup)
-            .addTo(map);
-
-        restaurantMarkers.push(marker);
-    });
-}
-
-function removeRestaurantsFromMap() {
-    restaurantMarkers.forEach(m => m.remove());
-    restaurantMarkers = [];
-}
-
-// =============================================
-// ACTUALIZAR ICONO DE MARCADOR AL MARCAR VISITA
-// =============================================
-function renderMarkerStates() {
-    Object.entries(markerElements).forEach(([indexStr, data]) => {
-        const index = parseInt(indexStr);
-        const key = `${currentDayIndex}-${index}`;
-        const isVisited = visitedStops[key] || false;
-        const { el, isEnd, number } = data;
-        const numEl = el.querySelector('.marker-number');
-        if (!numEl) return;
-        if (isVisited) {
-            el.classList.remove('marker-stop', 'marker-end', 'marker-restaurant');
-            el.classList.add('marker-visited');
-            numEl.innerHTML = '<i class="fas fa-check"></i>';
-        } else {
-            el.classList.remove('marker-visited');
-            el.classList.add(isEnd ? 'marker-end' : 'marker-stop');
-            numEl.innerHTML = number;
-        }
-    });
-}
-
-// =============================================
-// EVENT LISTENERS
-// =============================================
-document.querySelectorAll('.day-btn').forEach((btn, index) => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        document.querySelectorAll('.day-content').forEach(c => c.style.display = 'none');
-        document.getElementById(`day-${index}`).style.display = 'block';
-        displayDay(index);
-        // Restaurar capas activas al cambiar de día
-        if (localStorage.getItem('mallorca_show_parkings') === 'true') {
-            const zone = routeData[index]?.zone;
-            if (zone) addParkingsToMap(zone);
-        }
-        if (localStorage.getItem('mallorca_show_restaurants') === 'true') {
-            addRestaurantsToMap();
-        }
-        // Cerrar menú flotante al seleccionar un día
-        document.getElementById('floatingNav').classList.remove('open');
-        // Scroll hasta el principio del listado de sitios para ver, con espacio para el header
-        const dayContent = document.getElementById(`day-${index}`);
-        if (dayContent) {
-            const headerHeight = document.querySelector('header')?.offsetHeight || 0;
-            const top = dayContent.getBoundingClientRect().top + window.scrollY - headerHeight - 20;
-            window.scrollTo({ top, behavior: 'smooth' });
-        }
-    });
-});
-
-// Toggle del menú flotante y cierre externo (dentro de DOMContentLoaded para garantizar que el DOM exista)
-document.addEventListener('DOMContentLoaded', () => {
-    const floatingNav = document.getElementById('floatingNav');
-    const floatingNavToggle = document.getElementById('floatingNavToggle');
-
-    if (floatingNavToggle) {
-        floatingNavToggle.addEventListener('click', (e) => {
-            e.stopPropagation();
-            floatingNav.classList.toggle('open');
-        });
-    }
-
-    document.addEventListener('click', (e) => {
-        if (floatingNav && !floatingNav.contains(e.target)) {
-            floatingNav.classList.remove('open');
-        }
-    });
-
-    const clearBtn = document.getElementById('clearProgress');
-    if (clearBtn) {
-        clearBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // evita que el click cierre el acordeón
-            if (confirm('¿Reiniciar todo el progreso?')) {
-                visitedStops = {};
-                saveVisitedStops();
-                updateCheckboxUI();
-            }
-        });
-    }
-
-    // Acordeón del panel de progreso
-    const progressToggle = document.getElementById('progressToggle');
-    const progressPanel = document.getElementById('progressPanel');
-    if (progressToggle && progressPanel) {
-        progressToggle.addEventListener('click', () => {
-            progressPanel.classList.toggle('open');
-        });
-    }
-
-    // Botón expandir mapa
-    const mapExpandBtn = document.getElementById('mapExpandBtn');
-    const mapSection = document.getElementById('mapSection');
-    if (mapExpandBtn && mapSection) {
-        mapExpandBtn.addEventListener('click', () => {
-            const isFullscreen = mapSection.classList.toggle('map-fullscreen');
-            document.body.classList.toggle('map-is-fullscreen', isFullscreen);
-            mapExpandBtn.innerHTML = isFullscreen
-                ? '<i class="fas fa-compress"></i>'
-                : '<i class="fas fa-expand"></i>';
-            mapExpandBtn.title = isFullscreen ? 'Salir de pantalla completa' : 'Pantalla completa';
-            // Redimensionar mapa para rellenar el nuevo tamaño
-            setTimeout(() => map.resize(), 50);
-        });
-
-        // Cerrar con Escape
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && mapSection.classList.contains('map-fullscreen')) {
-                mapSection.classList.remove('map-fullscreen');
-                document.body.classList.remove('map-is-fullscreen');
-                mapExpandBtn.innerHTML = '<i class="fas fa-expand"></i>';
-                mapExpandBtn.title = 'Pantalla completa';
-                setTimeout(() => map.resize(), 50);
-            }
-        });
-    }
-
-    // Botones de acción: Parkings y Restaurantes
-    const parkingsActionBtn = document.getElementById('parkingsActionBtn');
-    if (parkingsActionBtn) {
-        parkingsActionBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const checkbox = document.getElementById('showParkingsCheckboxNav');
-            if (checkbox) {
-                checkbox.checked = !checkbox.checked;
-                checkbox.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-        });
-    }
-
-    const restaurantesActionBtn = document.getElementById('restaurantesActionBtn');
-    if (restaurantesActionBtn) {
-        restaurantesActionBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const checkbox = document.getElementById('showRestaurantsCheckboxNav');
-            if (checkbox) {
-                checkbox.checked = !checkbox.checked;
-                checkbox.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-        });
-    }
-});
-
-document.addEventListener('change', (e) => {
-    if (e.target.classList.contains('stop-checkbox')) {
-        const key = `${e.target.dataset.day}-${e.target.dataset.stop}`;
-        if (e.target.checked) visitedStops[key] = true;
-        else delete visitedStops[key];
-        saveVisitedStops();
-        updateCheckboxUI();
-        
-        // Scroll suave al siguiente checkbox sin marcar
-        if (e.target.checked) {
-            const currentItem = e.target.closest('.itinerary-item');
-            let nextItem = currentItem?.nextElementSibling;
-            
-            // Buscar el siguiente itinerary-item con checkbox sin marcar
-            while (nextItem) {
-                if (nextItem.classList.contains('itinerary-item')) {
-                    const nextCheckbox = nextItem.querySelector('.stop-checkbox');
-                    if (nextCheckbox && !nextCheckbox.checked) {
-                        // Scroll suave hacia el siguiente
-                        nextItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        break;
-                    }
-                }
-                nextItem = nextItem.nextElementSibling;
-            }
-        }
-    }
-    // Control de parkings en el mapa — sincroniza ambos checkboxes y guarda en localStorage
-    if (e.target.id === 'showParkingsCheckbox' || e.target.id === 'showParkingsCheckboxNav') {
-        const checked = e.target.checked;
-        const pCheckbox1 = document.getElementById('showParkingsCheckbox');
-        const pCheckbox2 = document.getElementById('showParkingsCheckboxNav');
-        if (pCheckbox1) pCheckbox1.checked = checked;
-        if (pCheckbox2) pCheckbox2.checked = checked;
-        localStorage.setItem('mallorca_show_parkings', checked);
-        const zone = routeData[currentDayIndex]?.zone;
-        if (checked && zone) {
-            addParkingsToMap(zone);
-        } else {
-            removeParkingsFromMap();
-        }
-    }
-    // Control de restaurantes en el mapa — sincroniza ambos checkboxes y guarda en localStorage
-    if (e.target.id === 'showRestaurantsCheckbox' || e.target.id === 'showRestaurantsCheckboxNav') {
-        const checked = e.target.checked;
-        const checkbox1 = document.getElementById('showRestaurantsCheckbox');
-        const checkbox2 = document.getElementById('showRestaurantsCheckboxNav');
-        if (checkbox1) checkbox1.checked = checked;
-        if (checkbox2) checkbox2.checked = checked;
-        localStorage.setItem('mallorca_show_restaurants', checked);
-        if (checked) {
-            addRestaurantsToMap();
-        } else {
-            removeRestaurantsFromMap();
-        }
-    }
-});
-
-const markerStyle = document.createElement('style');
-markerStyle.textContent = `
-    .custom-marker {
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
-        border: 3px solid white;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.35);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        font-size: 14px;
-        color: white;
-        cursor: pointer;
-        transition: transform 0.2s ease, background 0.3s ease;
-    }
-    .custom-marker:hover { transform: scale(1.15); }
-    .custom-marker.marker-start      { background: linear-gradient(135deg, #4CAF50, #2e7d32); }
-    .custom-marker.marker-stop       { background: linear-gradient(135deg, #ff6b35, #e64a19); }
-    .custom-marker.marker-end        { background: linear-gradient(135deg, #2196F3, #1565C0); }
-    .custom-marker.marker-restaurant { background: linear-gradient(135deg, #ff8c00, #c85000); }
-    .custom-marker.marker-visited    { background: linear-gradient(135deg, #28a745, #155724); }
-    .marker-number { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
-    
-    /* Parking Markers */
-    .parking-marker {
-        width: 35px;
-        height: 35px;
-        background: linear-gradient(135deg, #FF6B6B, #ee5a52);
-        border: 2px solid white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-    .parking-marker:hover { 
-        transform: scale(1.2);
-        box-shadow: 0 4px 12px rgba(255, 107, 107, 0.6);
-    }
-    .parking-letter {
-        font-weight: 900;
-        font-size: 16px;
-        color: white;
-        line-height: 1;
-    }
-
-    /* Restaurant Markers */
-    .restaurant-marker {
-        width: 36px;
-        height: 36px;
-        background: linear-gradient(135deg, #FF8C00, #d46d1f);
-        border: 2px solid white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 2px 8px rgba(255, 140, 0, 0.4);
-        cursor: pointer;
-        transition: all 0.2s ease;
-        color: white;
-        font-size: 16px;
-    }
-    .restaurant-marker:hover { 
-        transform: scale(1.2);
-        box-shadow: 0 4px 12px rgba(255, 140, 0, 0.6);
-    }
-    /* Marcadores del catálogo global — borde punteado para diferenciarlos */
-    .restaurant-marker-nearby {
-        border: 2px dashed rgba(255,255,255,0.85) !important;
-        width: 32px !important;
-        height: 32px !important;
-        font-size: 14px !important;
-        opacity: 0.92;
-    }
-    .restaurant-marker-nearby:hover {
-        opacity: 1;
-        transform: scale(1.2);
-    }
-
-    /* User Location Marker */
-    .user-location-marker {
-        width: 40px;
-        height: 40px;
-        background: #ffffff;
-        border: 2px solid #0066cc;
-        border-radius: 50%;
-        box-shadow: 0 2px 8px rgba(0, 102, 204, 0.6);
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 24px;
-        line-height: 1;
-    }
-
-    .user-location-pulse {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        animation: userLocationPulse 2s ease-in-out infinite;
-    }
-
-    @keyframes userLocationPulse {
-        0% {
-            box-shadow: inset 0 0 0 3px rgba(0, 102, 204, 0.4);
-        }
-        50% {
-            box-shadow: inset 0 0 0 1px rgba(0, 102, 204, 0.2);
-        }
-        100% {
-            box-shadow: inset 0 0 0 3px rgba(0, 102, 204, 0.4);
-        }
-    }
-
-    /* Popup distance styling */
-    .popup-distance {
-        margin-top: 0.5rem;
-        padding-top: 0.5rem;
-        border-top: 1px solid #e0e0e0;
-        font-size: 0.9rem !important;
-    }
-
-    /* Itinerary stop distance badge */
-    .stop-distance-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        margin: 0.35rem 0 0.6rem 0;
-        padding: 0.3rem 0.7rem;
-        background: rgba(0, 102, 204, 0.08);
-        border-left: 3px solid #0066cc;
-        border-radius: 0 6px 6px 0;
-        font-size: 0.82rem;
-        color: #0066cc;
-    }
-
-    .stop-distance-badge i {
-        font-size: 0.72rem;
-        opacity: 0.75;
-        flex-shrink: 0;
-    }
-
-    .stop-distance-badge .distance-km {
-        font-weight: 700;
-        font-size: 0.88rem;
-    }
-
-    .stop-distance-badge .distance-label {
-        color: #555;
-        font-size: 0.78rem;
-        font-weight: 400;
-    }
-`;
-document.head.appendChild(markerStyle);
+// ... (resto del fichero sin cambios) ...
 
 // Arrancar
 if (document.readyState === 'loading') {
