@@ -6,7 +6,7 @@ const MAPBOX_TOKEN = window.MAPBOX_TOKEN;
 const routeData = {
     // DÍA 1: Palma y alrededores (todo cercano)
     0: {
-        title: "Día 1: Calvià - Palma - Castillo Bellver - Catedral",
+        title: "Día 1: Calvià - Palma - Miró - Bellver - La Seu - Sa Llotja - Es Baluard - Santa Catalina",
         zone: "Palma de Mallorca",
         startCoord: { lat: 39.5617, lng: 2.5147, name: "Calvià (Hotel)" },
         stops: [
@@ -14,7 +14,10 @@ const routeData = {
             { name: "Catedral La Seu & Palau Almudaina", lat: 39.5698, lng: 2.6481, type: "stop", description: "Catedral gótica + Palacio Real + Plaza Mayor + Parque del Mar" },
             { name: "Ombu", lat: 39.5674, lng: 2.6517, type: "restaurant", description: "Tapas creativas en el Puerto de Palma — Terraza con vistas al mar" },
             { name: "Barrio Santa Catalina", lat: 39.5723, lng: 2.6340, type: "stop", description: "El barrio más trendy de Palma — Mercado, galerías y terrazas" },
-            { name: "Naan Street Food", lat: 39.5726, lng: 2.6387, type: "restaurant", description: "Cocina asiática creativa — Barrio Santa Catalina" }
+            { name: "Naan Street Food", lat: 39.5726, lng: 2.6387, type: "restaurant", description: "Cocina asiática creativa — Barrio Santa Catalina" },
+            { name: "Fundació Pilar i Joan Miró", lat: 39.5618, lng: 2.6030, type: "stop", description: "Estudio original y museo del genio surrealista mallorquín — Esculturas al aire libre" },
+            { name: "Sa Llotja (La Lonja Gótica)", lat: 39.5680, lng: 2.6481, type: "stop", description: "Joya gótica del s.XV, antigua lonja de mercaderes — Fachada más bella de Palma" },
+            { name: "Es Baluard (Museu d'Art Modern)", lat: 39.5693, lng: 2.6426, type: "stop", description: "Arte contemporáneo integrado en las murallas renacentistas de Palma — Vistas al mar" }
         ]
     },
     // DÍA 2: Tramontana (eje Ma-10 noroeste)
@@ -35,12 +38,15 @@ const routeData = {
     },
     // DÍA 3: Norte — Alcúdia, s'Albufera, Formentor, Pollença
     2: {
-        title: "Día 3: Calvià - Alcúdia - s'Albufera - Cap de Formentor - Pollença",
+        title: "Día 3: Calvià - Inca - Alcúdia - s'Albufera - Port de Pollença - Platja Formentor - Cap de Formentor",
         zone: "Cap de Formentor y Norte",
         startCoord: { lat: 39.5617, lng: 2.5147, name: "Calvià (Hotel)" },
         stops: [
+            { name: "Inca (Mercado de Cueros & Cellar)", lat: 39.7200, lng: 2.9105, type: "stop", description: "Capital artesanal de Mallorca — Mercado de cueros llamats \"Dijous\" — Cellar histórico" },
             { name: "Alcúdia (Casco Antiguo)", lat: 39.8540, lng: 3.1200, type: "stop", description: "Murallas medievales — Ciudad romana Pollentia — Calles empedradas medievales" },
             { name: "Parque Natural s'Albufera", lat: 39.7926, lng: 3.0856, type: "stop", description: "Humedal más importante de Baleares — +200 especies de aves — Entrada gratuita" },
+            { name: "Port de Pollença", lat: 39.9020, lng: 3.0870, type: "stop", description: "Puerto marinero con paseo marítimo — Parada ideal antes del Cap de Formentor" },
+            { name: "Platja de Formentor", lat: 39.9201, lng: 3.1380, type: "stop", description: "Una de las playas más bonitas de Mallorca — Aguas turquesas entre pinos y acantilados" },
             { name: "Cap de Formentor & Faro", lat: 39.9600, lng: 3.2007, type: "stop", description: "Acantilados +300m — Faro de Formentor — Vistas de 360° al Mediterráneo" },
             { name: "Los Patos / Figueret", lat: 39.8783, lng: 3.0126, type: "restaurant", description: "Pollença — Cocina mallorquina tradicional — Bacalao con sobrasada y miel" }
         ]
@@ -122,6 +128,9 @@ let activeMarkers = [];
 let markerElements = {};
 let currentDayIndex = 0;
 let visitedStops = {};
+let userLocation = null;
+let userMarker = null;
+let watchId = null;
 
 function loadVisitedStops() {
     const saved = localStorage.getItem('mallorca_visited_stops');
@@ -130,6 +139,156 @@ function loadVisitedStops() {
 
 function saveVisitedStops() {
     localStorage.setItem('mallorca_visited_stops', JSON.stringify(visitedStops));
+}
+
+// =============================================
+// CÁLCULO DE DISTANCIA Y GEOLOCALIZACIÓN
+// =============================================
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    // Fórmula de Haversine para calcular distancia entre dos puntos
+    const R = 6371; // Radio de la Tierra en km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+    return distance.toFixed(1);
+}
+
+function startLocationTracking() {
+    if (!navigator.geolocation) {
+        console.warn('Geolocalización no disponible en este navegador');
+        return;
+    }
+
+    // Verificar estado del permiso guardado
+    const permissionState = localStorage.getItem('geolocationPermission');
+    
+    // Si el usuario rechazó anteriormente, no intentar de nuevo
+    if (permissionState === 'denied') {
+        console.log('Permiso de geolocalización rechazado previamente');
+        return;
+    }
+    
+    // Si el usuario ya permitió anteriormente, ir directo a watchPosition
+    if (permissionState === 'granted') {
+        console.log('Usando permiso de geolocalización guardado');
+        // Obtener ubicación inicial
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                updateUserLocation(position.coords);
+            },
+            (error) => {
+                console.warn('Error al obtener ubicación:', error);
+            },
+            { enableHighAccuracy: true, maximumAge: 10000 }
+        );
+
+        // Seguimiento continuo
+        watchId = navigator.geolocation.watchPosition(
+            (position) => {
+                updateUserLocation(position.coords);
+            },
+            (error) => {
+                console.warn('Error en watchPosition:', error);
+            },
+            { enableHighAccuracy: false, maximumAge: 5000 }
+        );
+        return;
+    }
+
+    // Primera vez: pedir permiso y guardar resultado
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            // Permiso otorgado
+            localStorage.setItem('geolocationPermission', 'granted');
+            updateUserLocation(position.coords);
+            
+            // Iniciar seguimiento continuo
+            watchId = navigator.geolocation.watchPosition(
+                (position) => {
+                    updateUserLocation(position.coords);
+                },
+                (error) => {
+                    console.warn('Error en watchPosition:', error);
+                },
+                { enableHighAccuracy: false, maximumAge: 5000 }
+            );
+        },
+        (error) => {
+            // Permiso rechazado o error
+            if (error.code === error.PERMISSION_DENIED) {
+                localStorage.setItem('geolocationPermission', 'denied');
+                console.log('Permiso de geolocalización rechazado por el usuario');
+            } else {
+                console.warn('Error al obtener ubicación:', error);
+            }
+        },
+        { enableHighAccuracy: true, maximumAge: 10000 }
+    );
+}
+
+function updateUserLocation(coords) {
+    userLocation = {
+        lat: coords.latitude,
+        lng: coords.longitude
+    };
+
+    if (!map) return;
+
+    if (!userMarker) {
+        const el = document.createElement('div');
+        el.className = 'user-location-marker';
+        el.innerHTML = '<div class="user-location-pulse"></div>';
+        userMarker = new mapboxgl.Marker({ element: el, anchor: 'center' })
+            .setLngLat([userLocation.lng, userLocation.lat])
+            .addTo(map);
+    } else {
+        userMarker.setLngLat([userLocation.lng, userLocation.lat]);
+    }
+    
+    // Actualizar distancias en el itinerario
+    updateDistancesInItinerary();
+}
+
+function stopLocationTracking() {
+    if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+    }
+}
+
+function updateDistancesInItinerary() {
+    if (!userLocation || currentDayIndex === undefined) return;
+
+    const day = routeData[currentDayIndex];
+    if (!day || !day.stops) return;
+
+    day.stops.forEach((stop, stopIndex) => {
+        // Buscar el elemento del stop en el itinerario
+        const stopElement = document.querySelector(`[data-stop-id="${currentDayIndex + 1}-${stopIndex}"]`);
+        if (!stopElement) return;
+
+        // Calcular distancia
+        const distance = calculateDistance(userLocation.lat, userLocation.lng, stop.lat, stop.lng);
+
+        // Buscar o crear el contenedor de distancia dentro de stop-info
+        const stopInfo = stopElement.querySelector('.stop-info');
+        if (!stopInfo) return;
+
+        let distanceContainer = stopInfo.querySelector('.stop-distance-badge');
+        if (!distanceContainer) {
+            distanceContainer = document.createElement('p');
+            distanceContainer.className = 'stop-distance-badge';
+            stopInfo.appendChild(distanceContainer);
+        }
+
+        // Actualizar el contenido
+        distanceContainer.innerHTML = `<i class="fas fa-location-arrow"></i> <strong>${distance} km</strong> desde tu ubicación`;
+    });
 }
 
 function updateCheckboxUI() {
@@ -228,6 +387,8 @@ function initMap() {
         loadVisitedStops();
         updateCheckboxUI();
         displayDay(0);
+        // Iniciar seguimiento de ubicación del usuario
+        startLocationTracking();
     });
 }
 
@@ -300,8 +461,14 @@ async function displayDay(dayIndex) {
             markerElements[index] = { el, isEnd: stop.type === 'end', number: stopCount };
         }
 
+        let popupHTML = `<div class="popup-content"><h4>${stop.name}</h4><p>${stop.description}</p>`;
+        if (userLocation) {
+            const distance = calculateDistance(userLocation.lat, userLocation.lng, stop.lat, stop.lng);
+            popupHTML += `<p class="popup-distance"><span style="color: #0066cc; font-weight: 600;">📍 ${distance} km</span></p>`;
+        }
+        popupHTML += '</div>';
         const popup = new mapboxgl.Popup({ offset: 28, closeButton: false })
-            .setHTML(`<div class="popup-content"><h4>${stop.name}</h4><p>${stop.description}</p></div>`);
+            .setHTML(popupHTML);
 
         const marker = new mapboxgl.Marker({ element: el, anchor: 'bottom' })
             .setLngLat([stop.lng, stop.lat])
@@ -340,6 +507,9 @@ async function displayDay(dayIndex) {
             paint: { 'line-color': '#1db954', 'line-width': 5, 'line-opacity': 1 }
         });
     }
+    
+    // Actualizar distancias en el itinerario si el usuario tiene ubicación
+    updateDistancesInItinerary();
 }
 
 // =============================================
@@ -395,8 +565,14 @@ function addParkingsToMap(zone) {
         el.innerHTML = '<div class="parking-letter">P</div>';
         el.title = parking.name;
 
+        let popupHTML = `<div class="popup-content"><h4>${parking.name}</h4><p>${parking.tipo}</p><p>${parking.coste}</p>`;
+        if (userLocation) {
+            const distance = calculateDistance(userLocation.lat, userLocation.lng, lat, lng);
+            popupHTML += `<p class="popup-distance"><span style="color: #FF6B6B; font-weight: 600;">📍 ${distance} km</span></p>`;
+        }
+        popupHTML += '</div>';
         const popup = new mapboxgl.Popup({ offset: 25, closeButton: false })
-            .setHTML(`<div class="popup-content"><h4>${parking.name}</h4><p>${parking.tipo}</p><p>${parking.coste}</p></div>`);
+            .setHTML(popupHTML);
 
         const marker = new mapboxgl.Marker({ element: el, anchor: 'bottom' })
             .setLngLat([lng, lat])
@@ -592,6 +768,62 @@ markerStyle.textContent = `
         font-size: 16px;
         color: white;
         line-height: 1;
+    }
+
+    /* User Location Marker */
+    .user-location-marker {
+        width: 20px;
+        height: 20px;
+        background: #0066cc;
+        border: 3px solid white;
+        border-radius: 50%;
+        box-shadow: 0 2px 8px rgba(0, 102, 204, 0.6);
+        cursor: pointer;
+    }
+
+    .user-location-pulse {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        animation: userLocationPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes userLocationPulse {
+        0% {
+            box-shadow: inset 0 0 0 3px rgba(0, 102, 204, 0.4);
+        }
+        50% {
+            box-shadow: inset 0 0 0 1px rgba(0, 102, 204, 0.2);
+        }
+        100% {
+            box-shadow: inset 0 0 0 3px rgba(0, 102, 204, 0.4);
+        }
+    }
+
+    /* Popup distance styling */
+    .popup-distance {
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+        border-top: 1px solid #e0e0e0;
+        font-size: 0.9rem !important;
+    }
+
+    /* Itinerary stop distance badge */
+    .stop-distance-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        margin-top: 0.6rem;
+        padding: 0.25rem 0;
+        font-size: 0.82rem;
+        color: #0066cc;
+        border-top: 1px solid rgba(0, 102, 204, 0.15);
+        width: 100%;
+    }
+
+    .stop-distance-badge i {
+        font-size: 0.75rem;
+        opacity: 0.8;
     }
 `;
 document.head.appendChild(markerStyle);
