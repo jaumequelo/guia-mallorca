@@ -283,14 +283,13 @@ function updateMapForDay(dayIndex) {
     const label =
       stop.type === 'start' ? '⚑' : stop.type === 'end' ? '★' : String(i);
 
-    const el = document.createElement('div');
-    el.style.cssText = [
+    const el = createMarkerElement([
       'width:32px', 'height:32px', 'border-radius:50%',
       'background:' + color, 'border:3px solid white',
       'box-shadow:0 2px 8px rgba(0,0,0,0.3)',
       'display:flex', 'align-items:center', 'justify-content:center',
       'color:white', 'font-size:12px', 'font-weight:700', 'cursor:pointer',
-    ].join(';');
+    ]);
     el.textContent = label;
 
     const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
@@ -329,6 +328,16 @@ function clearAllMarkers() {
 }
 
 // ============================================================
+// UTILIDAD: CREAR ELEMENTO DE MARCADOR
+// ============================================================
+
+function createMarkerElement(styles) {
+  const el = document.createElement('div');
+  el.style.cssText = styles.join(';');
+  return el;
+}
+
+// ============================================================
 // MARCADORES DE PARKINGS
 // ============================================================
 
@@ -342,14 +351,13 @@ function addParkingMarkers(dayIndex) {
   if (!data || !map) return;
 
   data.parkings.forEach((p) => {
-    const el = document.createElement('div');
-    el.style.cssText = [
+    const el = createMarkerElement([
       'width:30px', 'height:30px', 'border-radius:6px',
       'background:#1565C0', 'border:2px solid white',
       'box-shadow:0 2px 8px rgba(0,0,0,0.3)',
       'display:flex', 'align-items:center', 'justify-content:center',
       'color:white', 'font-size:13px', 'font-weight:700', 'cursor:pointer',
-    ].join(';');
+    ]);
     el.textContent = 'P';
 
     const popup = new mapboxgl.Popup({ offset: 20 }).setHTML(
@@ -379,14 +387,13 @@ function addRestaurantMarkers(dayIndex) {
   if (!data || !map) return;
 
   data.restaurants.forEach((r) => {
-    const el = document.createElement('div');
-    el.style.cssText = [
+    const el = createMarkerElement([
       'width:30px', 'height:30px', 'border-radius:50%',
       'background:#E53935', 'border:2px solid white',
       'box-shadow:0 2px 8px rgba(0,0,0,0.3)',
       'display:flex', 'align-items:center', 'justify-content:center',
       'font-size:14px', 'cursor:pointer',
-    ].join(';');
+    ]);
     el.textContent = '🍽';
 
     const popup = new mapboxgl.Popup({ offset: 20 }).setHTML(
@@ -617,7 +624,8 @@ function renderProgressPanel() {
 function getSavedProgress() {
   try {
     return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-  } catch {
+  } catch (err) {
+    console.warn('Failed to parse saved progress:', err);
     return {};
   }
 }
@@ -625,8 +633,8 @@ function getSavedProgress() {
 function saveProgress(data) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  } catch {
-    // localStorage no disponible
+  } catch (err) {
+    console.warn('localStorage not available:', err);
   }
 }
 
