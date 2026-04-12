@@ -700,7 +700,7 @@ const ALL_RESTAURANTS = [
     { id: 41, name: "S'Hostal d'Algaida",           lat: 39.5650, lng: 2.8935, zone: 'interior',   type: "Cocina mallorquina temporada",        price: "~15-20 €" },
     { id: 42, name: "Sa Cuina De N'Aina",           lat: 39.6520, lng: 2.8960, zone: 'interior',   type: "Mediterránea casa mallorquina",       price: "~18-25 €" },
     { id: 43, name: "Restaurant Foc i Caliu",       lat: 39.7440, lng: 2.9200, zone: 'interior',   type: "Carnes premium al grill",             price: "~20-30 €" },
-    { id: 44, name: "Celler Can Font",              lat: 39.6455, lng: 3.0160, zone: 'interior',   type: "Celler familiar · Sopes y frit",     price: "~15-22 €" },
+    { id: 44, name: "Celler Can Font",              lat: 39.6455, lng: 3.0160, zone: 'interior',   type: "Celler familiar · Sopes y frit",      price: "~15-22 €" },
     { id: 45, name: "Es Racó d'en Jaume",           lat: 39.6390, lng: 2.7830, zone: 'interior',   type: "Arroces · D.O. Binissalem",          price: "~20-28 €" },
     { id: 46, name: "Es Celler de Petra",           lat: 39.6070, lng: 3.1020, zone: 'interior',   type: "Arròs brut · Cordero al horno",      price: "~18-25 €" },
     { id: 47, name: "Celler Ca'n Ripoll",           lat: 39.7200, lng: 2.9130, zone: 'interior',   type: "Celler centenario mallorquín",        price: "~20-30 €" },
