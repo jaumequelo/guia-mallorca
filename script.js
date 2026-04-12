@@ -10,14 +10,14 @@ const routeData = {
         zone: "Palma de Mallorca",
         startCoord: { lat: 39.5617, lng: 2.5147, name: "Calvià (Hotel)" },
         stops: [
+            { name: "Fundació Pilar i Joan Miró", lat: 39.5618, lng: 2.6030, type: "stop", description: "Estudio original y museo del genio surrealista mallorquín — Esculturas al aire libre" },
             { name: "Castillo de Bellver", lat: 39.5588, lng: 2.6147, type: "stop", description: "Único castillo circular de España — Vistas panorámicas de la bahía de Palma" },
             { name: "Catedral La Seu & Palau Almudaina", lat: 39.5698, lng: 2.6481, type: "stop", description: "Catedral gótica + Palacio Real + Plaza Mayor + Parque del Mar" },
             { name: "Ombu", lat: 39.5674, lng: 2.6517, type: "restaurant", description: "Tapas creativas en el Puerto de Palma — Terraza con vistas al mar" },
-            { name: "Barrio Santa Catalina", lat: 39.5723, lng: 2.6340, type: "stop", description: "El barrio más trendy de Palma — Mercado, galerías y terrazas" },
-            { name: "Naan Street Food", lat: 39.5726, lng: 2.6387, type: "restaurant", description: "Cocina asiática creativa — Barrio Santa Catalina" },
-            { name: "Fundació Pilar i Joan Miró", lat: 39.5618, lng: 2.6030, type: "stop", description: "Estudio original y museo del genio surrealista mallorquín — Esculturas al aire libre" },
             { name: "Sa Llotja (La Lonja Gótica)", lat: 39.5680, lng: 2.6481, type: "stop", description: "Joya gótica del s.XV, antigua lonja de mercaderes — Fachada más bella de Palma" },
-            { name: "Es Baluard (Museu d'Art Modern)", lat: 39.5693, lng: 2.6426, type: "stop", description: "Arte contemporáneo integrado en las murallas renacentistas de Palma — Vistas al mar" }
+            { name: "Es Baluard (Museu d'Art Modern)", lat: 39.5693, lng: 2.6426, type: "stop", description: "Arte contemporáneo integrado en las murallas renacentistas de Palma — Vistas al mar" },
+            { name: "Barrio Santa Catalina", lat: 39.5723, lng: 2.6340, type: "stop", description: "El barrio más trendy de Palma — Mercado, galerías y terrazas" },
+            { name: "Naan Street Food", lat: 39.5726, lng: 2.6387, type: "restaurant", description: "Cocina asiática creativa — Barrio Santa Catalina" }
         ]
     },
     // DÍA 2: Tramontana (eje Ma-10 noroeste)
@@ -281,13 +281,21 @@ function updateDistancesInItinerary() {
 
         let distanceContainer = stopInfo.querySelector('.stop-distance-badge');
         if (!distanceContainer) {
-            distanceContainer = document.createElement('p');
+            distanceContainer = document.createElement('div');
             distanceContainer.className = 'stop-distance-badge';
-            stopInfo.appendChild(distanceContainer);
+            // Insertar justo después del h3
+            const h3 = stopInfo.querySelector('h3');
+            if (h3 && h3.nextSibling) {
+                stopInfo.insertBefore(distanceContainer, h3.nextSibling);
+            } else if (h3) {
+                h3.insertAdjacentElement('afterend', distanceContainer);
+            } else {
+                stopInfo.prepend(distanceContainer);
+            }
         }
 
         // Actualizar el contenido
-        distanceContainer.innerHTML = `<i class="fas fa-location-arrow"></i> <strong>${distance} km</strong> desde tu ubicación`;
+        distanceContainer.innerHTML = `<i class="fas fa-location-arrow"></i><span class="distance-km">${distance} km</span><span class="distance-label">desde tu ubicación</span>`;
     });
 }
 
@@ -600,10 +608,12 @@ function renderMarkerStates() {
         const numEl = el.querySelector('.marker-number');
         if (!numEl) return;
         if (isVisited) {
-            el.className = 'custom-marker marker-visited';
+            el.classList.remove('marker-stop', 'marker-end', 'marker-restaurant');
+            el.classList.add('marker-visited');
             numEl.innerHTML = '<i class="fas fa-check"></i>';
         } else {
-            el.className = `custom-marker ${isEnd ? 'marker-end' : 'marker-stop'}`;
+            el.classList.remove('marker-visited');
+            el.classList.add(isEnd ? 'marker-end' : 'marker-stop');
             numEl.innerHTML = number;
         }
     });
@@ -813,17 +823,30 @@ markerStyle.textContent = `
         display: inline-flex;
         align-items: center;
         gap: 0.4rem;
-        margin-top: 0.6rem;
-        padding: 0.25rem 0;
+        margin: 0.35rem 0 0.6rem 0;
+        padding: 0.3rem 0.7rem;
+        background: rgba(0, 102, 204, 0.08);
+        border-left: 3px solid #0066cc;
+        border-radius: 0 6px 6px 0;
         font-size: 0.82rem;
         color: #0066cc;
-        border-top: 1px solid rgba(0, 102, 204, 0.15);
-        width: 100%;
     }
 
     .stop-distance-badge i {
-        font-size: 0.75rem;
-        opacity: 0.8;
+        font-size: 0.72rem;
+        opacity: 0.75;
+        flex-shrink: 0;
+    }
+
+    .stop-distance-badge .distance-km {
+        font-weight: 700;
+        font-size: 0.88rem;
+    }
+
+    .stop-distance-badge .distance-label {
+        color: #555;
+        font-size: 0.78rem;
+        font-weight: 400;
     }
 `;
 document.head.appendChild(markerStyle);
