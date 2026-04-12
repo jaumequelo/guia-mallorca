@@ -23,12 +23,15 @@
 
     <main class="container">
         <!-- Panel de Progreso del Viaje -->
-        <div class="progress-panel">
-            <div class="progress-header">
+        <div class="progress-panel" id="progressPanel">
+            <div class="progress-header" id="progressToggle">
                 <h3><i class="fas fa-tasks"></i> Mi Progreso de Viaje</h3>
-                <button id="clearProgress" class="btn-clear" title="Limpiar progreso">
-                    <i class="fas fa-redo"></i> Reiniciar
-                </button>
+                <div class="progress-header-actions">
+                    <button id="clearProgress" class="btn-clear" title="Limpiar progreso">
+                        <i class="fas fa-redo"></i> Reiniciar
+                    </button>
+                    <span class="progress-chevron"><i class="fas fa-chevron-down"></i></span>
+                </div>
             </div>
             <div class="progress-content" id="progressContent">
                 <!-- Se llena dinámicamente con JavaScript -->
@@ -37,8 +40,11 @@
 
         <div class="content-wrapper">
             <!-- Mapa -->
-            <div class="map-section">
+            <div class="map-section" id="mapSection">
                 <div id="map"></div>
+                <button class="map-expand-btn" id="mapExpandBtn" title="Pantalla completa">
+                    <i class="fas fa-expand"></i>
+                </button>
                 <div class="map-legend">
                     <div class="legend-item">
                         <span class="legend-icon start"></span> Inicio

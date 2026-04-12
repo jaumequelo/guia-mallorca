@@ -223,7 +223,6 @@ function initMap() {
     });
 
     map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right');
-    map.addControl(new mapboxgl.FullscreenControl(), 'top-right');
 
     map.on('load', () => {
         loadVisitedStops();
@@ -476,11 +475,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const clearBtn = document.getElementById('clearProgress');
     if (clearBtn) {
-        clearBtn.addEventListener('click', () => {
+        clearBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // evita que el click cierre el acordeón
             if (confirm('¿Reiniciar todo el progreso?')) {
                 visitedStops = {};
                 saveVisitedStops();
                 updateCheckboxUI();
+            }
+        });
+    }
+
+    // Acordeón del panel de progreso
+    const progressToggle = document.getElementById('progressToggle');
+    const progressPanel = document.getElementById('progressPanel');
+    if (progressToggle && progressPanel) {
+        progressToggle.addEventListener('click', () => {
+            progressPanel.classList.toggle('open');
+        });
+    }
+
+    // Botón expandir mapa
+    const mapExpandBtn = document.getElementById('mapExpandBtn');
+    const mapSection = document.getElementById('mapSection');
+    if (mapExpandBtn && mapSection) {
+        mapExpandBtn.addEventListener('click', () => {
+            const isFullscreen = mapSection.classList.toggle('map-fullscreen');
+            document.body.classList.toggle('map-is-fullscreen', isFullscreen);
+            mapExpandBtn.innerHTML = isFullscreen
+                ? '<i class="fas fa-compress"></i>'
+                : '<i class="fas fa-expand"></i>';
+            mapExpandBtn.title = isFullscreen ? 'Salir de pantalla completa' : 'Pantalla completa';
+            // Redimensionar mapa para rellenar el nuevo tamaño
+            setTimeout(() => map.resize(), 50);
+        });
+
+        // Cerrar con Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && mapSection.classList.contains('map-fullscreen')) {
+                mapSection.classList.remove('map-fullscreen');
+                document.body.classList.remove('map-is-fullscreen');
+                mapExpandBtn.innerHTML = '<i class="fas fa-expand"></i>';
+                mapExpandBtn.title = 'Pantalla completa';
+                setTimeout(() => map.resize(), 50);
             }
         });
     }
