@@ -863,11 +863,11 @@ document.querySelectorAll('.day-btn').forEach((btn, index) => {
         }
         // Cerrar menú flotante al seleccionar un día
         document.getElementById('floatingNav').classList.remove('open');
-        // Scroll hasta el mapa dejando visible el header sticky
-        const mapSection = document.querySelector('.map-section');
-        if (mapSection) {
+        // Scroll hasta el principio del listado de sitios para ver, con espacio para el header
+        const dayContent = document.getElementById(`day-${index}`);
+        if (dayContent) {
             const headerHeight = document.querySelector('header')?.offsetHeight || 0;
-            const top = mapSection.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
+            const top = dayContent.getBoundingClientRect().top + window.scrollY - headerHeight - 20;
             window.scrollTo({ top, behavior: 'smooth' });
         }
     });
@@ -935,6 +935,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 mapExpandBtn.innerHTML = '<i class="fas fa-expand"></i>';
                 mapExpandBtn.title = 'Pantalla completa';
                 setTimeout(() => map.resize(), 50);
+            }
+        });
+    }
+
+    // Botones de acción: Parkings y Restaurantes
+    const parkingsActionBtn = document.getElementById('parkingsActionBtn');
+    if (parkingsActionBtn) {
+        parkingsActionBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const checkbox = document.getElementById('showParkingsCheckboxNav');
+            if (checkbox) {
+                checkbox.checked = !checkbox.checked;
+                checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+        });
+    }
+
+    const restaurantesActionBtn = document.getElementById('restaurantesActionBtn');
+    if (restaurantesActionBtn) {
+        restaurantesActionBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const checkbox = document.getElementById('showRestaurantsCheckboxNav');
+            if (checkbox) {
+                checkbox.checked = !checkbox.checked;
+                checkbox.dispatchEvent(new Event('change', { bubbles: true }));
             }
         });
     }

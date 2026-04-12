@@ -386,20 +386,65 @@
 
         .floating-nav-menu a {
             display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 14px;
-            border-radius: 8px;
-            background: #f5f5f5;
-            color: #333;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.3rem;
+            padding: 0.75rem 1.25rem;
+            border-radius: 12px;
+            background: white;
+            color: #1a1a2e;
+            border: 2px solid #e8ecf0;
             font-size: 0.88rem;
             font-weight: 600;
             text-decoration: none;
-            transition: background 0.15s;
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            min-width: 200px;
         }
-        .floating-nav-menu a:hover { background: #ebebeb; }
-        .floating-nav-menu .fab-link-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
-        .floating-nav-menu .fab-link-primary:hover { opacity: 0.9; background: linear-gradient(135deg, #667eea, #764ba2); }
+        
+        .nav-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #1a1a2e;
+        }
+        
+        .nav-subtitle {
+            font-size: 0.75rem;
+            opacity: 0.75;
+            font-weight: 500;
+            color: #6b7280;
+        }
+        
+        .floating-nav-menu a:hover {
+            border-color: #667eea;
+            background: white;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 14px rgba(102, 126, 234, 0.2);
+        }
+        .floating-nav-menu .fab-link-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .floating-nav-menu .fab-link-primary .nav-label,
+        .floating-nav-menu .fab-link-primary .nav-subtitle {
+            color: white;
+        }
+        
+        .floating-nav-menu .fab-link-primary .nav-subtitle {
+            opacity: 0.9;
+        }
+        
+        .floating-nav-menu .fab-link-primary:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: #764ba2;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 14px rgba(102, 126, 234, 0.35);
+        }
 
         .floating-nav-toggle {
             width: 54px;
@@ -481,13 +526,16 @@
 <div class="floating-nav" id="floatingNav">
     <div class="floating-nav-menu" id="floatingNavMenu">
         <a href="index.html" class="fab-link-primary">
-            <i class="fas fa-map"></i> Guía 4 Días
+            <span class="nav-label"><i class="fas fa-map"></i> Guía</span>
+            <span class="nav-subtitle">4 Días Mallorca</span>
         </a>
         <a href="restaurantes-recomendados.html">
-            <i class="fas fa-utensils"></i> Restaurantes
+            <span class="nav-label"><i class="fas fa-utensils"></i> Restaurantes</span>
+            <span class="nav-subtitle">Guía Completa</span>
         </a>
         <a href="tiempo.html">
-            <i class="fas fa-cloud-sun"></i> Tiempo
+            <span class="nav-label"><i class="fas fa-cloud-sun"></i> Tiempo</span>
+            <span class="nav-subtitle">Mallorca Hoy</span>
         </a>
     </div>
     <button class="floating-nav-toggle" id="floatingNavToggle" aria-label="Navegación">

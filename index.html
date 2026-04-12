@@ -544,7 +544,7 @@
                 <h3><i class="fas fa-parking"></i> Dónde Aparcar — <span id="parkingTitle"></span></h3>
                 <label class="parking-toggle">
                     <input type="checkbox" id="showParkingsCheckbox" />
-                    <span>Mostrar parkings en el mapa</span>
+                    <span>Ver parkings</span>
                 </label>
                 <label class="parking-toggle">
                     <input type="checkbox" id="showRestaurantsCheckbox" />
@@ -673,21 +673,23 @@
                 <span class="day-number">Día 4</span>
                 <span class="day-title">Sur, Interior & Este</span>
             </button>
-            <label class="parking-toggle parking-toggle-nav">
-                <input type="checkbox" id="showParkingsCheckboxNav" />
-                <span><i class="fas fa-parking"></i> Parkings en el mapa</span>
-            </label>
-            <label class="parking-toggle parking-toggle-nav">
-                <input type="checkbox" id="showRestaurantsCheckboxNav" />
-                <span><i class="fas fa-utensils"></i> Ver Restaurantes</span>
-            </label>
-            <a href="restaurantes-recomendados.html" class="day-btn" style="text-decoration:none;color:inherit;background:linear-gradient(135deg,#FF8C00,#d46d1f);color:white;border-color:#FF8C00;">
-                <span class="day-number" style="opacity:0.85;">Guía Completa</span>
-                <span class="day-title"><i class="fas fa-utensils"></i> 30 Restaurantes</span>
+            <button class="action-btn" id="parkingsActionBtn">
+                <span class="day-number"><i class="fas fa-parking"></i> Parkings</span>
+                <span class="day-title">Ver en el mapa</span>
+            </button>
+            <button class="action-btn" id="restaurantesActionBtn">
+                <span class="day-number"><i class="fas fa-utensils"></i> Restaurantes</span>
+                <span class="day-title">Mostrar en mapa</span>
+            </button>
+            <input type="checkbox" id="showParkingsCheckboxNav" style="display: none;" />
+            <input type="checkbox" id="showRestaurantsCheckboxNav" style="display: none;" />
+            <a href="restaurantes-recomendados.html" class="day-btn day-btn-primary">
+                <span class="day-number">Restaurantes</span>
+                <span class="day-title"><i class="fas fa-utensils"></i> Guía Completa</span>
             </a>
-            <a href="tiempo.html" class="day-btn" style="text-decoration:none;color:inherit;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border-color:#667eea;">
-                <span class="day-number" style="opacity:0.85;">Clima</span>
-                <span class="day-title"><i class="fas fa-cloud-sun"></i> Tiempo en Mallorca</span>
+            <a href="tiempo.html" class="day-btn day-btn-primary">
+                <span class="day-number">Clima</span>
+                <span class="day-title"><i class="fas fa-cloud-sun"></i> Tiempo Mallorca</span>
             </a>
         </div>
         <button class="floating-nav-toggle" id="floatingNavToggle" aria-label="Seleccionar día">
