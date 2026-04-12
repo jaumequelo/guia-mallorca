@@ -280,7 +280,7 @@ function updateUserLocation(coords) {
     if (!userMarker) {
         const el = document.createElement('div');
         el.className = 'user-location-marker';
-        el.innerHTML = '<div class="user-location-pulse"></div>';
+        el.innerHTML = '🚗';
         userMarker = new mapboxgl.Marker({ element: el, anchor: 'center' })
             .setLngLat([userLocation.lng, userLocation.lat])
             .addTo(map);
@@ -1108,13 +1108,18 @@ markerStyle.textContent = `
 
     /* User Location Marker */
     .user-location-marker {
-        width: 20px;
-        height: 20px;
-        background: #0066cc;
-        border: 3px solid white;
+        width: 40px;
+        height: 40px;
+        background: #ffffff;
+        border: 2px solid #0066cc;
         border-radius: 50%;
         box-shadow: 0 2px 8px rgba(0, 102, 204, 0.6);
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        line-height: 1;
     }
 
     .user-location-pulse {
