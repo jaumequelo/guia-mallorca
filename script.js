@@ -891,25 +891,46 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    const clearBtn = document.getElementById('clearProgress');
-    if (clearBtn) {
-        clearBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // evita que el click cierre el acordeón
-            if (confirm('¿Reiniciar todo el progreso?')) {
-                visitedStops = {};
-                saveVisitedStops();
-                updateCheckboxUI();
-            }
-        });
-    }
-
     // Acordeón del panel de progreso
     const progressToggle = document.getElementById('progressToggle');
     const progressPanel = document.getElementById('progressPanel');
     if (progressToggle && progressPanel) {
-        progressToggle.addEventListener('click', () => {
+        progressToggle.addEventListener('click', (e) => {
+            // Ignorar clicks en el botón de reiniciar
+            if (e.target.closest('#clearProgress')) {
+                return;
+            }
             progressPanel.classList.toggle('open');
         });
+    }
+
+    const clearBtn = document.getElementById('clearProgress');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Botón Reiniciar pulsado - antes del confirm');
+
+            // Usar setTimeout para asegurar que el evento se procese completamente
+            setTimeout(() => {
+                const confirmed = window.confirm('¿Reiniciar todo el progreso? Se borrarán todos los checks marcados.');
+                console.log('Confirm result:', confirmed);
+
+                if (confirmed) {
+                    console.log('Progreso reiniciado');
+                    visitedStops = {};
+                    saveVisitedStops();
+                    updateCheckboxUI();
+                    // Cerrar el acordeón después de reiniciar
+                    if (progressPanel) {
+                        progressPanel.classList.remove('open');
+                    }
+                }
+            }, 50);
+        });
+        console.log('Listener del botón Reiniciar registrado');
+    } else {
+        console.error('No se encontró el botón clearProgress');
     }
 
     // Botón expandir mapa

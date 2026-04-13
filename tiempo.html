@@ -2,10 +2,11 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Tiempo en Mallorca | Guía Mallorca</title>
     <meta name="description" content="Pronóstico del tiempo en Mallorca por zonas: Palma, Tramuntana, Norte, Sur y Este." />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="styles.css" />
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -16,85 +17,108 @@
             --text: #1a1a2e;
             --muted: #6b7280;
             --accent: #667eea;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
         }
 
-        html { scroll-behavior: smooth; }
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+        }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background: var(--bg);
             color: var(--text);
             line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
         }
 
         /* ── Header ── */
         header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 1.5rem 0;
-            box-shadow: 0 4px 16px rgba(102,126,234,0.3);
+            padding: 1rem 0 1.25rem;
+            box-shadow: 0 4px 20px rgba(102,126,234,0.25);
             position: sticky;
             top: 0;
             z-index: 100;
         }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
 
         header h1 {
-            font-size: clamp(1.3rem, 4vw, 2rem);
+            font-size: clamp(1.1rem, 4vw, 1.75rem);
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 0.6rem;
+            gap: 0.5rem;
             margin-bottom: 0.2rem;
         }
 
-        header .subtitle { font-size: 0.88rem; opacity: 0.85; }
+        header .subtitle { font-size: 0.8rem; opacity: 0.9; }
 
         .back-link {
             display: inline-flex;
             align-items: center;
             gap: 0.4rem;
-            color: rgba(255,255,255,0.8);
+            color: rgba(255,255,255,0.9);
             text-decoration: none;
-            font-size: 0.85rem;
-            margin-bottom: 0.7rem;
-            transition: color 0.2s;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-sm);
         }
-        .back-link:hover { color: white; }
+        .back-link:hover {
+            color: white;
+            background: rgba(255,255,255,0.15);
+        }
 
-        main { padding: 2rem 0 4rem; }
+        main { padding: 1.25rem 0 3rem; }
+
+        @media (max-width: 768px) {
+            main {
+                padding: 1rem 0 2rem;
+                padding-bottom: 100px;
+            }
+        }
 
         /* ── Info box ── */
         .info-box {
             background: rgba(102,126,234,0.08);
             color: #4353a4;
-            padding: 0.9rem 1.2rem;
-            border-radius: 10px;
+            padding: 0.875rem 1rem;
+            border-radius: var(--radius-sm);
             border-left: 4px solid #667eea;
-            font-size: 0.88rem;
-            margin-bottom: 2rem;
+            font-size: 0.8rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm);
         }
 
         /* ── Zone section ── */
-        .zone-section { margin-bottom: 3rem; }
+        .zone-section { margin-bottom: 2rem; }
 
         .zone-header {
             display: flex;
             align-items: center;
-            gap: 0.8rem;
-            margin-bottom: 1rem;
+            gap: 0.625rem;
+            margin-bottom: 0.875rem;
         }
 
         .zone-dot {
-            width: 14px;
-            height: 14px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             flex-shrink: 0;
         }
 
         .zone-header h2 {
-            font-size: 1.4rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: var(--text);
         }
@@ -109,19 +133,27 @@
         .forecast-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
+            gap: 0.875rem;
+        }
+
+        @media (max-width: 900px) {
+            .forecast-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 520px) {
+            .forecast-grid { grid-template-columns: 1fr; }
         }
 
         /* ── Cards base ── */
         .weather-card {
             background: var(--card);
-            border-radius: 16px;
+            border-radius: var(--radius-lg);
             overflow: hidden;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-            transition: box-shadow 0.2s, transform 0.2s;
+            box-shadow: var(--shadow-md);
+            transition: all 0.25s ease;
         }
         .weather-card:hover {
-            box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+            box-shadow: var(--shadow-lg);
             transform: translateY(-3px);
         }
 
@@ -135,14 +167,43 @@
         /* ── Current card (full width) ── */
         .weather-card.current {
             grid-column: 1 / -1;
-            padding: 2rem;
+            padding: 1.5rem;
+        }
+
+        @media (max-width: 520px) {
+            .weather-card.current { padding: 1.25rem; }
         }
 
         .current-body {
             display: grid;
             grid-template-columns: auto 1fr auto;
-            gap: 2rem;
+            gap: 1.5rem;
             align-items: start;
+        }
+
+        @media (max-width: 900px) {
+            .current-body {
+                grid-template-columns: auto 1fr;
+                grid-template-rows: auto auto;
+            }
+            .current-locations {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .current-body {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+            }
+            .current-main {
+                flex-direction: row;
+                align-items: center;
+                gap: 1rem;
+                min-width: unset;
+            }
+            .current-main .big-icon { font-size: 3rem; }
+            .current-main .big-temp { font-size: 2.2rem; }
         }
 
         /* Big icon + temp */
@@ -150,13 +211,13 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-width: 120px;
+            min-width: 100px;
         }
 
-        .current-main .big-icon { font-size: 4rem; line-height: 1; }
+        .current-main .big-icon { font-size: 3.5rem; line-height: 1; }
 
         .current-main .big-temp {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 800;
             background: linear-gradient(135deg, #667eea, #764ba2);
             -webkit-background-clip: text;
@@ -166,47 +227,51 @@
         }
 
         .current-main .temp-range {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--muted);
             margin-top: 0.2rem;
         }
 
         .current-main .condition {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
             color: var(--text);
-            margin-top: 0.3rem;
+            margin-top: 0.25rem;
             text-align: center;
         }
 
         .current-main .feels-like {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--muted);
-            margin-top: 0.2rem;
+            margin-top: 0.15rem;
         }
 
         /* Metrics grid */
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 0.8rem;
+            gap: 0.625rem;
+        }
+
+        @media (max-width: 520px) {
+            .metrics-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
         .metric {
             background: var(--bg);
-            border-radius: 12px;
-            padding: 0.9rem 1rem;
+            border-radius: var(--radius-md);
+            padding: 0.75rem 0.875rem;
             display: flex;
             align-items: center;
-            gap: 0.8rem;
+            gap: 0.625rem;
         }
 
-        .metric-emoji { font-size: 1.5rem; line-height: 1; flex-shrink: 0; }
+        .metric-emoji { font-size: 1.25rem; line-height: 1; flex-shrink: 0; }
 
         .metric-info { display: flex; flex-direction: column; }
 
         .metric-info .m-label {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--muted);
             text-transform: uppercase;
             font-weight: 600;
@@ -214,14 +279,14 @@
         }
 
         .metric-info .m-value {
-            font-size: 1.05rem;
+            font-size: 0.95rem;
             font-weight: 700;
             color: var(--text);
             line-height: 1.2;
         }
 
         .metric-info .m-unit {
-            font-size: 0.78rem;
+            font-size: 0.7rem;
             color: var(--muted);
         }
 
@@ -229,116 +294,116 @@
         .current-locations {}
 
         .locations-label {
-            font-size: 0.72rem;
+            font-size: 0.65rem;
             font-weight: 700;
             color: var(--muted);
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            margin-bottom: 0.6rem;
+            margin-bottom: 0.5rem;
         }
 
         .location-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.55rem 0.75rem;
-            border-radius: 8px;
-            margin-bottom: 0.4rem;
+            padding: 0.5rem 0.625rem;
+            border-radius: var(--radius-sm);
+            margin-bottom: 0.35rem;
             background: var(--bg);
-            font-size: 0.88rem;
+            font-size: 0.8rem;
         }
         .location-row:last-child { margin-bottom: 0; }
 
         .location-row .loc-name {
             display: flex;
             align-items: center;
-            gap: 0.4rem;
+            gap: 0.35rem;
             font-weight: 500;
         }
 
         .location-row .loc-temp {
             font-weight: 700;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
         }
 
         /* ── Forecast cards (compact) ── */
         .weather-card.forecast {
-            padding: 1.2rem;
+            padding: 1rem;
         }
 
         .forecast-header {
-            font-size: 1rem;
+            font-size: 0.85rem;
             font-weight: 700;
             color: var(--muted);
-            margin-bottom: 0.9rem;
+            margin-bottom: 0.75rem;
         }
 
         .forecast-main {
             display: flex;
             align-items: center;
-            gap: 0.8rem;
-            margin-bottom: 0.9rem;
+            gap: 0.625rem;
+            margin-bottom: 0.75rem;
         }
 
-        .forecast-main .f-icon { font-size: 2.2rem; line-height: 1; }
+        .forecast-main .f-icon { font-size: 1.75rem; line-height: 1; }
 
         .forecast-main .f-temp {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 800;
             color: var(--text);
             line-height: 1;
         }
 
         .forecast-main .f-range {
-            font-size: 0.78rem;
+            font-size: 0.7rem;
             color: var(--muted);
-            margin-top: 0.2rem;
+            margin-top: 0.15rem;
         }
 
         .forecast-main .f-condition {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 600;
             color: var(--text);
-            margin-top: 0.2rem;
+            margin-top: 0.15rem;
         }
 
         .forecast-metrics {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 0.5rem;
+            gap: 0.4rem;
         }
 
         .f-metric {
             background: var(--bg);
-            border-radius: 8px;
-            padding: 0.5rem 0.7rem;
+            border-radius: var(--radius-sm);
+            padding: 0.4rem 0.5rem;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.4rem;
         }
 
-        .f-metric .fm-icon { font-size: 1rem; }
+        .f-metric .fm-icon { font-size: 0.9rem; }
 
         .f-metric .fm-info {}
-        .f-metric .fm-label { font-size: 0.62rem; color: var(--muted); font-weight: 600; text-transform: uppercase; }
-        .f-metric .fm-value { font-size: 0.9rem; font-weight: 700; color: var(--text); }
+        .f-metric .fm-label { font-size: 0.55rem; color: var(--muted); font-weight: 600; text-transform: uppercase; }
+        .f-metric .fm-value { font-size: 0.8rem; font-weight: 700; color: var(--text); }
 
         /* ── Spinner / loading ── */
         .loading {
             text-align: center;
-            padding: 4rem 2rem;
+            padding: 3rem 1.5rem;
             color: var(--muted);
         }
 
         .spinner {
             display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 4px solid var(--border);
+            width: 36px;
+            height: 36px;
+            border: 3px solid var(--border);
             border-top-color: #667eea;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
-            margin-bottom: 1rem;
+            margin-bottom: 0.875rem;
         }
 
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -346,40 +411,43 @@
         .error-message {
             background: #fff5f5;
             color: #c62828;
-            padding: 1rem 1.2rem;
-            border-radius: 10px;
+            padding: 0.875rem 1rem;
+            border-radius: var(--radius-sm);
             border-left: 4px solid #e53935;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            box-shadow: var(--shadow-sm);
         }
 
         .update-time {
             text-align: center;
             color: var(--muted);
-            font-size: 0.82rem;
-            margin-top: 1.5rem;
+            font-size: 0.75rem;
+            margin-top: 1.25rem;
+            padding: 0.5rem;
         }
 
         /* ── Floating nav ── */
         .floating-nav {
             position: fixed;
-            bottom: 24px;
-            right: 24px;
+            bottom: 1.5rem;
+            right: 1.5rem;
             z-index: 1000;
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-            gap: 10px;
+            gap: 0.75rem;
         }
 
         .floating-nav-menu {
             display: none;
             flex-direction: column;
-            gap: 8px;
+            gap: 0.5rem;
             background: white;
-            border-radius: 14px;
-            padding: 12px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-            min-width: 200px;
+            border-radius: var(--radius-md);
+            padding: 0.75rem;
+            box-shadow: var(--shadow-lg);
+            min-width: 180px;
+            border: 1px solid var(--border-color);
         }
 
         .floating-nav.open .floating-nav-menu { display: flex; }
@@ -388,61 +456,62 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            gap: 0.3rem;
-            padding: 0.75rem 1.25rem;
-            border-radius: 12px;
+            gap: 0.25rem;
+            padding: 0.625rem 0.875rem;
+            border-radius: var(--radius-sm);
             background: white;
             color: #1a1a2e;
             border: 2px solid #e8ecf0;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             font-weight: 600;
             text-decoration: none;
-            transition: all 0.25s ease;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            min-width: 200px;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
+            min-width: 160px;
+            touch-action: manipulation;
         }
-        
+
         .nav-label {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.4rem;
             color: #1a1a2e;
         }
-        
+
         .nav-subtitle {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             opacity: 0.75;
             font-weight: 500;
             color: #6b7280;
         }
-        
+
         .floating-nav-menu a:hover {
             border-color: #667eea;
-            background: white;
-            transform: translateY(-3px);
-            box-shadow: 0 4px 14px rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
         }
+
         .floating-nav-menu .fab-link-primary {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border-color: #667eea;
         }
-        
+
         .floating-nav-menu .fab-link-primary .nav-label,
         .floating-nav-menu .fab-link-primary .nav-subtitle {
             color: white;
         }
-        
+
         .floating-nav-menu .fab-link-primary .nav-subtitle {
             opacity: 0.9;
         }
-        
+
         .floating-nav-menu .fab-link-primary:hover {
             background: linear-gradient(135deg, #667eea, #764ba2);
             border-color: #764ba2;
-            transform: translateY(-3px);
+            transform: translateY(-2px);
             box-shadow: 0 4px 14px rgba(102, 126, 234, 0.35);
         }
 
@@ -456,41 +525,41 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 16px rgba(102,126,234,0.45);
-            transition: transform 0.2s;
-            font-size: 1.4rem;
+            box-shadow: 0 4px 16px rgba(102,126,234,0.4);
+            transition: all 0.2s ease;
+            font-size: 1.3rem;
             color: white;
+            touch-action: manipulation;
         }
-        .floating-nav-toggle:hover { transform: scale(1.1); }
+        .floating-nav-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(102,126,234,0.5);
+        }
+        .floating-nav-toggle:active {
+            transform: scale(0.95);
+        }
 
         /* ── Responsive ── */
-        @media (max-width: 900px) {
-            .current-body {
-                grid-template-columns: auto 1fr;
-                grid-template-rows: auto auto;
-            }
-            .current-locations {
-                grid-column: 1 / -1;
-            }
-        }
-
         @media (max-width: 768px) {
-            .forecast-grid { grid-template-columns: repeat(2, 1fr); }
-            .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+            .zone-header h2 { font-size: 1rem; }
+            .info-box { font-size: 0.75rem; }
         }
 
         @media (max-width: 520px) {
-            .forecast-grid { grid-template-columns: 1fr; }
-            .weather-card.current { padding: 1.2rem; }
-            .current-body {
-                grid-template-columns: 1fr;
-                gap: 1.2rem;
+            .floating-nav {
+                bottom: 1rem;
+                right: 1rem;
             }
-            .current-main { flex-direction: row; align-items: center; gap: 1rem; min-width: unset; }
-            .current-main .big-icon { font-size: 3rem; }
-            .current-main .big-temp { font-size: 2.2rem; }
-            .metrics-grid { grid-template-columns: 1fr 1fr; }
-            .floating-nav { bottom: 16px; right: 16px; }
+            .floating-nav-toggle {
+                width: 50px;
+                height: 50px;
+            }
+            .floating-nav-menu {
+                min-width: 160px;
+            }
+            .forecast-header { font-size: 0.8rem; }
+            .forecast-main .f-icon { font-size: 1.5rem; }
+            .forecast-main .f-temp { font-size: 1.3rem; }
         }
     </style>
 
