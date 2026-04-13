@@ -21,6 +21,15 @@
     <meta name="mobile-web-app-capable" content="yes">
 </head>
 <body>
+    <!-- Pantalla de Carga -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Cargando Guía de Mallorca en 4 Días</p>
+            <p class="loading-subtext">Preparando tu experiencia...</p>
+        </div>
+    </div>
+
     <header>
         <div class="container">
             <h1><i class="fas fa-map-location-dot"></i> Guía Mallorca 4 Días</h1>
@@ -78,9 +87,11 @@
                         <div class="itinerary-item" data-stop-id="1-0">
                             <div class="stop-number">1</div>
                             <input type="checkbox" class="stop-checkbox" data-day="0" data-stop="0" />
-                            <div class="time-badge">09:00-10:15</div>
                             <div class="stop-info">
-                                <h3><i class="fas fa-palette"></i> Fundació Pilar i Joan Miró</h3>
+                                <div class="stop-header">
+                                    <h3><i class="fas fa-palette"></i> Fundació Pilar i Joan Miró</h3>
+                                    <div class="time-badge">09:00-10:15</div>
+                                </div>
                                 <p>El estudio donde Miró creó sus obras más importantes, conservado tal como lo dejó. Gran colección de pinturas, esculturas y cerámicas. El edificio de Rafael Moneo es en sí una obra de arte.</p>
                                 <p class="tip-info"><i class="fas fa-lightbulb"></i> <strong>Consejo:</strong> Primera parada del día, de camino desde el hotel. Jardines con esculturas al aire libre incluidos.</p>
                                 <div class="stop-details">
@@ -93,9 +104,11 @@
                         <div class="itinerary-item" data-stop-id="1-1">
                             <div class="stop-number">2</div>
                             <input type="checkbox" class="stop-checkbox" data-day="0" data-stop="1" />
-                            <div class="time-badge">10:30-12:00</div>
                             <div class="stop-info">
-                                <h3><i class="fas fa-chess-rook"></i> Castillo de Bellver</h3>
+                                <div class="stop-header">
+                                    <h3><i class="fas fa-chess-rook"></i> Castillo de Bellver</h3>
+                                    <div class="time-badge">10:30-12:00</div>
+                                </div>
                                 <p>Único castillo circular de España, del siglo XIV, en una colina a 3 km del centro. Vistas panorámicas de toda la bahía de Palma y las montañas. Pequeño museo de Historia de Palma incluido.</p>
                                 <p class="tip-info"><i class="fas fa-lightbulb"></i> <strong>Consejo:</strong> Muy cerca de la Fundació Miró, solo 5 minutos en coche. Ideal a media mañana antes del calor.</p>
                                 <div class="stop-details">
@@ -108,9 +121,11 @@
                         <div class="itinerary-item" data-stop-id="1-2">
                             <div class="stop-number">3</div>
                             <input type="checkbox" class="stop-checkbox" data-day="0" data-stop="2" />
-                            <div class="time-badge">12:30-14:30</div>
                             <div class="stop-info">
-                                <h3><i class="fas fa-cross"></i> Catedral La Seu, Palau Almudaina & Centro Histórico</h3>
+                                <div class="stop-header">
+                                    <h3><i class="fas fa-cross"></i> Catedral La Seu, Palau Almudaina & Centro Histórico</h3>
+                                    <div class="time-badge">12:30-14:30</div>
+                                </div>
                                 <p>La Catedral gótica tiene el rosetón más grande del mundo (13m de diámetro). Al lado, el <strong>Palacio Real de la Almudaina</strong>. Pasea por la <strong>Plaza Mayor</strong> y termina en el <strong>Parque del Mar</strong> con vistas a La Seu.</p>
                                 <div class="stop-details">
                                     <span><i class="fas fa-info-circle"></i> Free tour disponible</span>
@@ -122,9 +137,11 @@
                         <div class="itinerary-item" data-stop-id="1-7">
                             <div class="stop-number">4</div>
                             <input type="checkbox" class="stop-checkbox" data-day="0" data-stop="7" />
-                            <div class="time-badge">15:00-15:45</div>
                             <div class="stop-info">
-                                <h3><i class="fas fa-landmark"></i> Sa Llotja (La Lonja Gótica)</h3>
+                                <div class="stop-header">
+                                    <h3><i class="fas fa-landmark"></i> Sa Llotja (La Lonja Gótica)</h3>
+                                    <div class="time-badge">15:00-15:45</div>
+                                </div>
                                 <p>La joya del gótico civil mallorquín del s.XV, antigua lonja de comerciantes. Su fachada con palmeras y arcos ogivales es la más fotografiada de Palma. Interior con exposiciones temporales gratuitas.</p>
                                 <p class="tip-info"><i class="fas fa-lightbulb"></i> <strong>Consejo:</strong> A 2 minutos a pie de la Catedral. Entra si hay exposición abierta — merece la pena.</p>
                                 <div class="stop-details">
@@ -137,9 +154,11 @@
                         <div class="itinerary-item" data-stop-id="1-8">
                             <div class="stop-number">5</div>
                             <input type="checkbox" class="stop-checkbox" data-day="0" data-stop="8" />
-                            <div class="time-badge">16:00-17:30</div>
                             <div class="stop-info">
-                                <h3><i class="fas fa-paint-brush"></i> Es Baluard — Museu d'Art Modern</h3>
+                                <div class="stop-header">
+                                    <h3><i class="fas fa-paint-brush"></i> Es Baluard — Museu d'Art Modern</h3>
+                                    <div class="time-badge">16:00-17:30</div>
+                                </div>
                                 <p>Museo de arte moderno y contemporáneo integrado espectacularmente en las murallas renacentistas del s.XVI. La terraza sobre el mar con vistas al puerto es impresionante. Colección con Miró, Picasso y artistas locales.</p>
                                 <p class="tip-info"><i class="fas fa-lightbulb"></i> <strong>Consejo:</strong> Aunque no entres al museo, sube a la terraza de las murallas — es gratis y las vistas son increíbles.</p>
                                 <div class="stop-details">
@@ -152,9 +171,11 @@
                         <div class="itinerary-item" data-stop-id="1-10">
                             <div class="stop-number">6</div>
                             <input type="checkbox" class="stop-checkbox" data-day="0" data-stop="10" />
-                            <div class="time-badge">18:00-20:00</div>
                             <div class="stop-info">
-                                <h3><i class="fas fa-store"></i> Barrio Santa Catalina</h3>
+                                <div class="stop-header">
+                                    <h3><i class="fas fa-store"></i> Barrio Santa Catalina</h3>
+                                    <div class="time-badge">18:00-20:00</div>
+                                </div>
                                 <p>El barrio más trendy de Palma, lleno de galerías, tiendas de diseño, terrazas y el <strong>Mercat de Santa Catalina</strong>. Perfecto para pasear la tarde y cenar.</p>
                                 <div class="stop-details">
                                     <span><i class="fas fa-shopping-bag"></i> Tiendas de diseño</span>
@@ -186,14 +207,16 @@
                 <div class="day-content" id="day-1" style="display: none;">
                     <h2>Día 2: Calvià - Valldemossa - Deià - Sa Foradada - Sóller - Fornalutx</h2>
                     <p class="day-summary">La ruta más espectacular de Mallorca: la Serra de Tramontana. Todos los pueblos están encadenados por la misma carretera costera (Ma-10), sin saltos. De Valldemossa a Fornalutx siguiendo la montaña.</p>
-                    
+
                     <div class="itinerary">
                         <div class="itinerary-item" data-stop-id="2-0">
                             <div class="stop-number">1</div>
                             <input type="checkbox" class="stop-checkbox" data-day="1" data-stop="0" />
-                            <div class="time-badge">09:00-11:00</div>
                             <div class="stop-info">
-                                <h3><i class="fas fa-gopuram"></i> Valldemossa</h3>
+                                <div class="stop-header">
+                                    <h3><i class="fas fa-gopuram"></i> Valldemossa</h3>
+                                    <div class="time-badge">09:00-11:00</div>
+                                </div>
                                 <p>Pueblo medieval en la Serra de Tramontana. Visita la <strong>Real Cartuja</strong> donde vivieron Chopin y George Sand. No te pierdas la famosa coca de patatas en <strong>Ca'n Molinas</strong>. ⏱️ 25 min desde Calvià.</p>
                                 <div class="stop-details">
                                     <span><i class="fas fa-church"></i> La Cartuja</span>
@@ -206,9 +229,11 @@
                         <div class="itinerary-item" data-stop-id="2-2">
                             <div class="stop-number">2</div>
                             <input type="checkbox" class="stop-checkbox" data-day="1" data-stop="2" />
-                            <div class="time-badge">11:15-12:30</div>
                             <div class="stop-info">
-                                <h3><i class="fas fa-palette"></i> Deià</h3>
+                                <div class="stop-header">
+                                    <h3><i class="fas fa-palette"></i> Deià</h3>
+                                    <div class="time-badge">11:15-12:30</div>
+                                </div>
                                 <p>Pueblo de artistas entre montañas y mar. Inspiró a Robert Graves, que vivió aquí hasta su muerte. Callejuelas con galerías, artesanía y cafés con vistas espectaculares. ⏱️ 15 min desde Valldemossa.</p>
                                 <div class="stop-details">
                                     <span><i class="fas fa-palette"></i> Pueblo de artistas</span>
@@ -220,9 +245,11 @@
                         <div class="itinerary-item" data-stop-id="2-5">
                             <div class="stop-number">3</div>
                             <input type="checkbox" class="stop-checkbox" data-day="1" data-stop="5" />
-                            <div class="time-badge">13:00-14:00</div>
                             <div class="stop-info">
-                                <h3><i class="fas fa-mountain-sun"></i> Mirador Sa Foradada</h3>
+                                <div class="stop-header">
+                                    <h3><i class="fas fa-mountain-sun"></i> Mirador Sa Foradada</h3>
+                                    <div class="time-badge">13:00-14:00</div>
+                                </div>
                                 <p>Curiosa roca con agujero natural, uno de los miradores más fotogénicos de Mallorca. Vistas al Mediterráneo desde los acantilados. ⏱️ 10 min desde Deià.</p>
                                 <div class="stop-details">
                                     <span><i class="fas fa-sun"></i> Atardecer espectacular</span>
@@ -234,9 +261,11 @@
                         <div class="itinerary-item" data-stop-id="2-7">
                             <div class="stop-number">4</div>
                             <input type="checkbox" class="stop-checkbox" data-day="1" data-stop="7" />
-                            <div class="time-badge">14:30-15:00</div>
                             <div class="stop-info">
-                                <h3><i class="fas fa-mountain-sun"></i> Mirador de Ses Barques</h3>
+                                <div class="stop-header">
+                                    <h3><i class="fas fa-mountain-sun"></i> Mirador de Ses Barques</h3>
+                                    <div class="time-badge">14:30-15:00</div>
+                                </div>
                                 <p>Parada obligatoria en la carretera panorámica Ma-11 con vistas impresionantes del Puerto de Sóller y la Tramuntana. ⏱️ 20 min desde Sa Foradada.</p>
                                 <p class="tip-info"><i class="fas fa-lightbulb"></i> <strong>Consejo:</strong> Parada rápida de 15 min para fotografías. Aparcamiento gratuito en el mirador.</p>
                                 <div class="stop-details">
@@ -249,9 +278,11 @@
                         <div class="itinerary-item" data-stop-id="2-8">
                             <div class="stop-number">5</div>
                             <input type="checkbox" class="stop-checkbox" data-day="1" data-stop="8" />
-                            <div class="time-badge">15:15-17:30</div>
                             <div class="stop-info">
-                                <h3><i class="fas fa-ship"></i> Puerto de Sóller</h3>
+                                <div class="stop-header">
+                                    <h3><i class="fas fa-ship"></i> Puerto de Sóller</h3>
+                                    <div class="time-badge">15:15-17:30</div>
+                                </div>
                                 <p>Encantador puerto de pescadores. Opcionalmente, excursión en barco a <strong>Sa Calobra</strong> (cala salvaje entre acantilados). ⏱️ 10 min desde Ses Barques.</p>
                                 <div class="stop-details">
                                     <span><i class="fas fa-ship"></i> Barco a Sa Calobra</span>
@@ -264,9 +295,11 @@
                         <div class="itinerary-item" data-stop-id="2-12">
                             <div class="stop-number">6</div>
                             <input type="checkbox" class="stop-checkbox" data-day="1" data-stop="12" />
-                            <div class="time-badge">19:00-20:00</div>
                             <div class="stop-info">
-                                <h3><i class="fas fa-gopuram"></i> Fornalutx</h3>
+                                <div class="stop-header">
+                                    <h3><i class="fas fa-gopuram"></i> Fornalutx</h3>
+                                    <div class="time-badge">19:00-20:00</div>
+                                </div>
                                 <p>Uno de los pueblos más bonitos de España. Callejuelas adoquinadas con macetas de flores, vistas al Valle de los Naranjos. ⏱️ 10 min desde Puerto Sóller.</p>
                                 <div class="stop-details">
                                     <span><i class="fas fa-camera"></i> Muy fotogénico</span>
@@ -298,14 +331,16 @@
                 <div class="day-content" id="day-2" style="display: none;">
                     <h2>Día 3: Calvià - Inca - Alcúdia - s'Albufera - Port de Pollença - Platja Formentor - Cap de Formentor</h2>
                     <p class="day-summary">El norte de Mallorca en profundidad: artesanía e historia en Inca, las murallas medievales de Alcúdia, el humedal de s'Albufera, el puerto marinero de Pollença, la playa más bella de la isla y el faro en acantilados de vértigo.</p>
-                    
+
                     <div class="itinerary">
                         <div class="itinerary-item" data-stop-id="3-0">
                             <div class="stop-number">1</div>
                             <input type="checkbox" class="stop-checkbox" data-day="2" data-stop="0" />
-                            <div class="time-badge">09:00-10:00</div>
                             <div class="stop-info">
-                                <h3><i class="fas fa-store"></i> Inca — Mercado de Cueros & Cellar Histórico</h3>
+                                <div class="stop-header">
+                                    <h3><i class="fas fa-store"></i> Inca — Mercado de Cueros & Cellar Histórico</h3>
+                                    <div class="time-badge">09:00-10:00</div>
+                                </div>
                                 <p>La capital artesanal de Mallorca, famosa por sus artículos de cuero (zapatos, bolsos, cinturones) con precios de fábrica. El <strong>Dijous Bo</strong> es la feria más grande de la isla, pero el mercado de cueros está abierto todos los días. Aprovecha para desayunar en un cellar.</p>
                                 <p class="tip-info"><i class="fas fa-lightbulb"></i> <strong>Consejo:</strong> Parada de camino hacia Alcúdia por la Ma-13. Solo 35 min desde Calvià. Perfecto para compras de artesanía local.</p>
                                 <div class="stop-details">
@@ -319,9 +354,11 @@
                         <div class="itinerary-item" data-stop-id="3-5">
                             <div class="stop-number">2</div>
                             <input type="checkbox" class="stop-checkbox" data-day="2" data-stop="5" />
-                            <div class="time-badge">10:15-12:00</div>
                             <div class="stop-info">
-                                <h3><i class="fas fa-landmark"></i> Alcúdia (Casco Antiguo)</h3>
+                                <div class="stop-header">
+                                    <h3><i class="fas fa-landmark"></i> Alcúdia (Casco Antiguo)</h3>
+                                    <div class="time-badge">10:15-12:00</div>
+                                </div>
                                 <p>La ciudad más antigua de Mallorca, con <strong>murallas medievales del s.XIV</strong> perfectamente conservadas y restos de la ciudad romana de <strong>Pollentia</strong>. ⏱️ 15 min desde Inca por la Ma-13.</p>
                                 <p class="tip-info"><i class="fas fa-lightbulb"></i> <strong>Consejo:</strong> No te pierdas el Foro Romano y la amfiteatre. Pasea por las calles dentro de las murallas.</p>
                                 <div class="stop-details">
@@ -335,9 +372,11 @@
                         <div class="itinerary-item" data-stop-id="3-7">
                             <div class="stop-number">3</div>
                             <input type="checkbox" class="stop-checkbox" data-day="2" data-stop="7" />
-                            <div class="time-badge">12:15-13:30</div>
                             <div class="stop-info">
-                                <h3><i class="fas fa-feather-alt"></i> Parque Natural s'Albufera</h3>
+                                <div class="stop-header">
+                                    <h3><i class="fas fa-feather-alt"></i> Parque Natural s'Albufera</h3>
+                                    <div class="time-badge">12:15-13:30</div>
+                                </div>
                                 <p>El humedal más importante de Baleares, entre Alcúdia y Can Picafort. Más de <strong>200 especies de aves</strong>, especialmente en primavera y otoño. Entrada gratuita. ⏱️ 10 min desde Alcúdia.</p>
                                 <p class="tip-info"><i class="fas fa-lightbulb"></i> <strong>Consejo:</strong> Deja el coche en el exterior. Lleva prismáticos si tienes.</p>
                                 <div class="stop-details">
@@ -351,9 +390,11 @@
                         <div class="itinerary-item" data-stop-id="3-8">
                             <div class="stop-number">4</div>
                             <input type="checkbox" class="stop-checkbox" data-day="2" data-stop="8" />
-                            <div class="time-badge">14:00-15:00</div>
                             <div class="stop-info">
-                                <h3><i class="fas fa-anchor"></i> Port de Pollença</h3>
+                                <div class="stop-header">
+                                    <h3><i class="fas fa-anchor"></i> Port de Pollença</h3>
+                                    <div class="time-badge">14:00-15:00</div>
+                                </div>
                                 <p>El puerto marinero más auténtico del norte de Mallorca. Un largo <strong>paseo marítimo de 4 km</strong> flanqueado de palmeras, veleros y restaurantes de pescado. Perfecto para comer y tomar un café antes de subir al Cap.</p>
                                 <p class="tip-info"><i class="fas fa-lightbulb"></i> <strong>Consejo:</strong> Come aquí antes de seguir al Cap. Es el último punto con servicios antes del faro.</p>
                                 <div class="stop-details">
@@ -367,9 +408,11 @@
                         <div class="itinerary-item" data-stop-id="3-11">
                             <div class="stop-number">5</div>
                             <input type="checkbox" class="stop-checkbox" data-day="2" data-stop="11" />
-                            <div class="time-badge">15:30-17:00</div>
                             <div class="stop-info">
-                                <h3><i class="fas fa-umbrella-beach"></i> Platja de Formentor</h3>
+                                <div class="stop-header">
+                                    <h3><i class="fas fa-umbrella-beach"></i> Platja de Formentor</h3>
+                                    <div class="time-badge">15:30-17:00</div>
+                                </div>
                                 <p>Considerada una de las playas más bonitas de España: <strong>aguas turquesas cristalinas</strong> entre pinares y acantilados, con fondo de arena blanca. Está en la península de Formentor, de camino al faro. ⏱️ 10 min desde Port de Pollença.</p>
                                 <p class="tip-info"><i class="fas fa-lightbulb"></i> <strong>Consejo:</strong> Bájate a darte un chapuzón antes de subir al Cap. Parking gratuito en la misma playa.</p>
                                 <div class="stop-details">
@@ -383,9 +426,11 @@
                         <div class="itinerary-item" data-stop-id="3-12">
                             <div class="stop-number">6</div>
                             <input type="checkbox" class="stop-checkbox" data-day="2" data-stop="12" />
-                            <div class="time-badge">17:30-20:00</div>
                             <div class="stop-info">
-                                <h3><i class="fas fa-mountain-sun"></i> Cap de Formentor & Faro</h3>
+                                <div class="stop-header">
+                                    <h3><i class="fas fa-mountain-sun"></i> Cap de Formentor & Faro</h3>
+                                    <div class="time-badge">17:30-20:00</div>
+                                </div>
                                 <p>El punto más septentrional de Mallorca. Acantilados de +300m de caída, carretera de vértigo y el <strong>Faro de Formentor</strong> con vistas de 360° al Mediterráneo. Atardecer inolvidable. ⏱️ 35 min desde s'Albufera.</p>
                                 <p class="tip-info"><i class="fas fa-lightbulb"></i> <strong>Consejo:</strong> En verano usa el bus lanzadera desde Port de Pollença — aparcar es muy difícil en temporada alta.</p>
                                 <div class="stop-details">
@@ -418,14 +463,16 @@
                 <div class="day-content" id="day-3" style="display: none;">
                     <h2>Día 4: Calvià - Sur (Es Trenc) - Interior Es Pla - Costa Este</h2>
                     <p class="day-summary">El gran día de contrastes: de las playas vírgenes del sur al corazón rural de la isla, terminando en la Costa Este con cuevas subterráneas, fortalezas medievales y calas secretas.</p>
-                    
+
                     <div class="itinerary">
                         <div class="itinerary-item" data-stop-id="4-0">
                             <div class="stop-number">1</div>
                             <input type="checkbox" class="stop-checkbox" data-day="3" data-stop="0" />
-                            <div class="time-badge">08:00-12:00</div>
                             <div class="stop-info">
-                                <h3><i class="fas fa-umbrella-beach"></i> Es Trenc</h3>
+                                <div class="stop-header">
+                                    <h3><i class="fas fa-umbrella-beach"></i> Es Trenc</h3>
+                                    <div class="time-badge">08:00-12:00</div>
+                                </div>
                                 <p>La mejor playa del sur de Mallorca. Dos kilómetros de <strong>arena blanca virgen</strong> con aguas turquesas. Rodeada de salinas históricas. ⏱️ 1h desde Calvià. Parking de pago.</p>
                                 <p class="tip-info"><i class="fas fa-lightbulb"></i> <strong>Consejo:</strong> Llega a las 8:00 para tener sitio. En agosto es la playa más concurrida del sur.</p>
                                 <div class="stop-details">
@@ -439,9 +486,11 @@
                         <div class="itinerary-item" data-stop-id="4-5">
                             <div class="stop-number">2</div>
                             <input type="checkbox" class="stop-checkbox" data-day="3" data-stop="5" />
-                            <div class="time-badge">12:30-14:00</div>
                             <div class="stop-info">
-                                <h3><i class="fas fa-water"></i> Caló des Moro</h3>
+                                <div class="stop-header">
+                                    <h3><i class="fas fa-water"></i> Caló des Moro</h3>
+                                    <div class="time-badge">12:30-14:00</div>
+                                </div>
                                 <p>Cala virgen de 40 metros escondida entre acantilados, a 30 min de Es Trenc. <strong>Snorkel imprescindible</strong> — aguas turquesas sobre arena blanca. 📍 Parking en urbanización Cala Llombards.</p>
                                 <p class="tip-info"><i class="fas fa-lightbulb"></i> <strong>Consejo:</strong> Sin servicios — lleva agua y comida. Muy concurrida en verano.</p>
                                 <div class="stop-details">
@@ -454,9 +503,11 @@
                         <div class="itinerary-item" data-stop-id="4-7">
                             <div class="stop-number">3</div>
                             <input type="checkbox" class="stop-checkbox" data-day="3" data-stop="7" />
-                            <div class="time-badge">15:00-16:30</div>
                             <div class="stop-info">
-                                <h3><i class="fas fa-dungeon"></i> Cuevas del Drach (Porto Cristo)</h3>
+                                <div class="stop-header">
+                                    <h3><i class="fas fa-dungeon"></i> Cuevas del Drach (Porto Cristo)</h3>
+                                    <div class="time-badge">15:00-16:30</div>
+                                </div>
                                 <p>La atracción más visitada del este. Cuatro cuevas gigantes con más de 1.200m de recorrido y el <strong>Lago Martel</strong>, uno de los lagos subterráneos más grandes del mundo (177m). Visita incluye concierto de música clásica en barca. ⏱️ 1h desde Caló des Moro.</p>
                                 <p class="tip-info"><i class="fas fa-lightbulb"></i> <strong>Consejo:</strong> Reserva entrada online con antelación — se agotan fácilmente.</p>
                                 <div class="stop-details">
@@ -470,9 +521,11 @@
                         <div class="itinerary-item" data-stop-id="4-13">
                             <div class="stop-number">4</div>
                             <input type="checkbox" class="stop-checkbox" data-day="3" data-stop="13" />
-                            <div class="time-badge">17:00-18:00</div>
                             <div class="stop-info">
-                                <h3><i class="fas fa-dungeon"></i> Coves d'Artà (Canyamel)</h3>
+                                <div class="stop-header">
+                                    <h3><i class="fas fa-dungeon"></i> Coves d'Artà (Canyamel)</h3>
+                                    <div class="time-badge">17:00-18:00</div>
+                                </div>
                                 <p>Accesibles por un <strong>arco de roca de 100 metros</strong> abierto directamente al mar. Jules Verne se inspiró aquí para escribir «Viaje al Centro de la Tierra». Menos masificada que las del Drach. ⏱️ 30 min desde Porto Cristo.</p>
                                 <div class="stop-details">
                                     <span><i class="fas fa-archway"></i> Arco de 100m al mar</span>
@@ -484,9 +537,11 @@
                         <div class="itinerary-item" data-stop-id="4-14">
                             <div class="stop-number">5</div>
                             <input type="checkbox" class="stop-checkbox" data-day="3" data-stop="14" />
-                            <div class="time-badge">18:30-19:30</div>
                             <div class="stop-info">
-                                <h3><i class="fas fa-gopuram"></i> Artà (Santuario Sant Salvador)</h3>
+                                <div class="stop-header">
+                                    <h3><i class="fas fa-gopuram"></i> Artà (Santuario Sant Salvador)</h3>
+                                    <div class="time-badge">18:30-19:30</div>
+                                </div>
                                 <p>Casco histórico coronado por el <strong>Santuari de Sant Salvador</strong> con vistas impresionantes del este de la isla. Calles empedradas medievales en perfecto estado. ⏱️ 15 min desde Coves d'Artà.</p>
                                 <div class="stop-details">
                                     <span><i class="fas fa-mountain"></i> Santuario en lo alto</span>
@@ -498,9 +553,11 @@
                         <div class="itinerary-item" data-stop-id="4-15">
                             <div class="stop-number">6</div>
                             <input type="checkbox" class="stop-checkbox" data-day="3" data-stop="15" />
-                            <div class="time-badge">19:45-20:30</div>
                             <div class="stop-info">
-                                <h3><i class="fas fa-chess-rook"></i> Capdepera (Castillo Medieval)</h3>
+                                <div class="stop-header">
+                                    <h3><i class="fas fa-chess-rook"></i> Capdepera (Castillo Medieval)</h3>
+                                    <div class="time-badge">19:45-20:30</div>
+                                </div>
                                 <p>Fortaleza medieval del siglo XIV en lo alto de la montaña, una de las mejor conservadas de toda la isla. En días despejados se ve la isla de <strong>Menorca</strong> desde lo alto. ⏱️ 10 min desde Artà.</p>
                                 <div class="stop-details">
                                     <span><i class="fas fa-eye"></i> Se ve Menorca</span>
@@ -512,9 +569,11 @@
                         <div class="itinerary-item" data-stop-id="4-21">
                             <div class="stop-number">7</div>
                             <input type="checkbox" class="stop-checkbox" data-day="3" data-stop="21" />
-                            <div class="time-badge">Opcional</div>
                             <div class="stop-info">
-                                <h3><i class="fas fa-church"></i> Petra (Casa Natal Junípero Serra)</h3>
+                                <div class="stop-header">
+                                    <h3><i class="fas fa-church"></i> Petra (Casa Natal Junípero Serra)</h3>
+                                    <div class="time-badge">Opcional</div>
+                                </div>
                                 <p>El fundador de <strong>San Francisco, Los Ángeles y 7 ciudades más</strong> de California nació aquí. Casco urbano con calles empedradas medievales intactas. Cerca: Santuario de Bonany con vistas a toda la llanura. ⏱️ 15 min desde Sineu.</p>
                                 <div class="stop-details">
                                     <span><i class="fas fa-globe-americas"></i> Fundador de San Francisco</span>

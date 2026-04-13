@@ -873,8 +873,28 @@ document.querySelectorAll('.day-btn').forEach((btn, index) => {
     });
 });
 
+// =============================================
+// PANTALLA DE CARGA
+// =============================================
+function hideLoadingScreen() {
+    const loadingScreen = document.getElementById('loadingScreen');
+    if (loadingScreen) {
+        // Pequeño delay para asegurar que todo está cargado
+        setTimeout(() => {
+            loadingScreen.classList.add('hidden');
+            // Eliminar del DOM después de la transición
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+            }, 500);
+        }, 300);
+    }
+}
+
 // Toggle del menú flotante y cierre externo (dentro de DOMContentLoaded para garantizar que el DOM exista)
 document.addEventListener('DOMContentLoaded', () => {
+    // Ocultar pantalla de carga
+    hideLoadingScreen();
+
     const floatingNav = document.getElementById('floatingNav');
     const floatingNavToggle = document.getElementById('floatingNavToggle');
 

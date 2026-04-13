@@ -32,6 +32,81 @@ html {
     scroll-behavior: smooth;
 }
 
+/* =============================================
+   PANTALLA DE CARGA
+   ============================================= */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.loading-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.loading-content {
+    text-align: center;
+    color: white;
+    padding: 2rem;
+}
+
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    border-top-color: #0066cc;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
+    animation: spin 1s linear infinite;
+}
+
+.loading-text {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.02em;
+}
+
+.loading-subtext {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    font-weight: 400;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 768px) {
+    .loading-spinner {
+        width: 48px;
+        height: 48px;
+        border-width: 3px;
+    }
+
+    .loading-text {
+        font-size: 1.1rem;
+    }
+
+    .loading-subtext {
+        font-size: 0.8rem;
+    }
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     background-color: var(--light-bg);
@@ -463,12 +538,12 @@ body.map-is-fullscreen {
 
 .itinerary-item {
     display: grid;
-    grid-template-columns: auto auto auto 1fr;
-    gap: 1rem;
+    grid-template-columns: auto auto 1fr;
+    gap: 0.75rem;
     margin-bottom: 1.25rem;
     padding-bottom: 1.25rem;
     border-bottom: 1px solid var(--border-color);
-    align-items: start;
+    align-items: flex-start;
     transition: all 0.25s ease;
 }
 
@@ -496,17 +571,18 @@ body.map-is-fullscreen {
 
 /* Checkbox */
 .stop-checkbox {
-    width: 22px;
-    height: 22px;
+    width: 16px;
+    height: 16px;
     cursor: pointer;
     accent-color: var(--success-color);
-    margin-top: 4px;
+    margin: 0;
+    flex-shrink: 0;
     transition: all 0.2s ease;
     touch-action: manipulation;
 }
 
 .stop-checkbox:hover {
-    transform: scale(1.15);
+    transform: scale(1.2);
 }
 
 .stop-checkbox:checked {
@@ -515,8 +591,8 @@ body.map-is-fullscreen {
 
 /* Número de parada */
 .stop-number {
-    width: 26px;
-    height: 26px;
+    width: 24px;
+    height: 24px;
     background: linear-gradient(135deg, var(--primary-color), #00b4e6);
     color: white;
     border-radius: 50%;
@@ -524,27 +600,43 @@ body.map-is-fullscreen {
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     flex-shrink: 0;
     box-shadow: 0 2px 8px rgba(0, 102, 204, 0.25);
+    margin-top: 2px;
+}
+
+.stop-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.stop-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.stop-header h3 {
+    margin: 0;
+    flex: 1;
 }
 
 .time-badge {
     background: linear-gradient(135deg, var(--primary-color), #00b4e6);
     color: white;
-    padding: 0.5rem 0.75rem;
+    padding: 0.35rem 0.6rem;
     border-radius: var(--radius-sm);
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 700;
     text-align: center;
-    height: fit-content;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    white-space: nowrap;
     text-transform: uppercase;
     letter-spacing: 0.03em;
-    white-space: nowrap;
     box-shadow: 0 2px 8px rgba(0, 102, 204, 0.2);
+    flex-shrink: 0;
 }
 
 .stop-info h3 {
@@ -1263,10 +1355,7 @@ footer a.github-link {
         padding: 0.625rem;
     }
 
-    .stop-info {
-        grid-column: 1 / -1;
-        grid-row: 2;
-    }
+ 
 
     .time-badge {
         font-size: 0.65rem;
