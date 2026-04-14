@@ -141,31 +141,6 @@
             #restaurantMap { height: clamp(280px, 40vh, 350px); }
         }
 
-        .map-legend {
-            padding: 0.75rem 1rem;
-            background: white;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem 1.2rem;
-            font-size: 0.78rem;
-            color: var(--text-light);
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.35rem;
-        }
-
-        .legend-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            border: 2px solid white;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.25);
-        }
-
         /* ============ FILTER TABS ============ */
         .filter-bar {
             display: flex;
@@ -472,6 +447,30 @@
             align-items: flex-end;
             gap: 0.75rem;
         }
+
+        /* === Flecha indicadora === */
+        .floating-arrow {
+            position: fixed;
+            bottom: 4.5rem;
+            right: calc(1.5rem + 27px);
+            z-index: 999;
+            font-size: 1.5rem;
+            color: #ff6b35;
+            animation: bounce-arrow 1.5s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes bounce-arrow {
+            0%, 100% { transform: translateY(0); opacity: 1; }
+            50% { transform: translateY(-8px); opacity: 0.7; }
+        }
+
+        @media (max-width: 480px) {
+            .floating-arrow {
+                bottom: 4rem;
+                right: calc(1rem + 25px);
+            }
+        }
         .floating-nav-menu {
             display: none;
             flex-direction: column;
@@ -587,15 +586,6 @@
             <!-- MAP -->
             <div class="map-wrapper">
                 <div id="restaurantMap"></div>
-                <div class="map-legend">
-                    <div class="legend-item"><div class="legend-dot" style="background:#FF8C00"></div> Palma</div>
-                    <div class="legend-item"><div class="legend-dot" style="background:#1976D2"></div> Norte</div>
-                    <div class="legend-item"><div class="legend-dot" style="background:#388e3c"></div> Tramuntana</div>
-                    <div class="legend-item"><div class="legend-dot" style="background:#8e24aa"></div> Interior</div>
-                    <div class="legend-item"><div class="legend-dot" style="background:#e53935"></div> Sur</div>
-                    <div class="legend-item"><div class="legend-dot" style="background:#546e7a"></div> Otros</div>
-                    <div class="legend-item"><div class="legend-dot" style="background:#00acc1"></div> Con Vistas</div>
-                </div>
             </div>
 
             <!-- LIST -->
@@ -988,6 +978,9 @@
 </main>
 
 <!-- Botón flotante de navegación -->
+<div class="floating-arrow" id="floatingArrow">
+    <i class="fas fa-arrow-down"></i>
+</div>
 <div class="floating-nav" id="floatingNav">
     <div class="floating-nav-menu" id="floatingNavMenu">
         <a href="index.html" class="fab-link-primary">
@@ -1301,14 +1294,25 @@ document.querySelectorAll('.restaurant-card').forEach(card => {
 (function() {
     const nav = document.getElementById('floatingNav');
     const toggle = document.getElementById('floatingNavToggle');
+    const arrow = document.getElementById('floatingArrow');
     if (!nav || !toggle) return;
+
+    // Ocultar flecha al interactuar
+    function hideArrow() {
+        if (arrow) arrow.style.display = 'none';
+    }
+
     toggle.addEventListener('click', e => {
         e.stopPropagation();
         nav.classList.toggle('open');
+        hideArrow();
     });
     document.addEventListener('click', e => {
         if (!nav.contains(e.target)) nav.classList.remove('open');
     });
+
+    // Ocultar flecha después de 5 segundos
+    setTimeout(hideArrow, 5000);
 })();
 </script>
 </body>

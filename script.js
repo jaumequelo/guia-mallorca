@@ -897,11 +897,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const floatingNav = document.getElementById('floatingNav');
     const floatingNavToggle = document.getElementById('floatingNavToggle');
+    const floatingArrow = document.getElementById('floatingArrow');
+
+    // Ocultar flecha
+    function hideArrow() {
+        if (floatingArrow) floatingArrow.style.display = 'none';
+    }
 
     if (floatingNavToggle) {
         floatingNavToggle.addEventListener('click', (e) => {
             e.stopPropagation();
             floatingNav.classList.toggle('open');
+            hideArrow();
         });
     }
 
@@ -910,6 +917,9 @@ document.addEventListener('DOMContentLoaded', () => {
             floatingNav.classList.remove('open');
         }
     });
+
+    // Ocultar flecha después de 5 segundos
+    setTimeout(hideArrow, 5000);
 
     // Acordeón del panel de progreso
     const progressToggle = document.getElementById('progressToggle');

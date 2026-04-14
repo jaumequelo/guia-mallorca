@@ -592,6 +592,9 @@
 </main>
 
 <!-- Botón flotante de navegación -->
+<div class="floating-arrow" id="floatingArrow">
+    <i class="fas fa-arrow-down"></i>
+</div>
 <div class="floating-nav" id="floatingNav">
     <div class="floating-nav-menu" id="floatingNavMenu">
         <a href="index.html" class="fab-link-primary">
@@ -1015,17 +1018,27 @@ function renderWeatherCards(weatherByZone) {
 document.addEventListener('DOMContentLoaded', () => {
     const nav = document.getElementById('floatingNav');
     const toggle = document.getElementById('floatingNavToggle');
-    
+    const arrow = document.getElementById('floatingArrow');
+
+    // Ocultar flecha
+    function hideArrow() {
+        if (arrow) arrow.style.display = 'none';
+    }
+
     if (toggle) {
         toggle.addEventListener('click', e => {
             e.stopPropagation();
             nav.classList.toggle('open');
+            hideArrow();
         });
     }
 
     document.addEventListener('click', e => {
         if (!nav.contains(e.target)) nav.classList.remove('open');
     });
+
+    // Ocultar flecha después de 5 segundos
+    setTimeout(hideArrow, 5000);
 
     // Cargar datos meteorológicos al iniciar
     loadAllWeather();
